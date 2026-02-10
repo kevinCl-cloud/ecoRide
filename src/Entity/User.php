@@ -1,0 +1,282 @@
+<?php
+
+namespace App\Entity;
+
+use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\ORM\Mapping as ORM;
+
+#[ORM\Entity(repositoryClass: UserRepository::class)]
+class User
+{
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column]
+    private ?int $id = null;
+
+    #[ORM\Column(length: 50)]
+    private ?string $name = null;
+
+    #[ORM\Column(length: 50)]
+    private ?string $firstName = null;
+
+    #[ORM\Column(length: 50)]
+    private ?string $pseudo = null;
+
+    #[ORM\Column(length: 100, unique:true)]
+    private ?string $email = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $password_hash = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $photo = null;
+
+    #[ORM\Column]
+    private ?int $credits = 20;
+
+    #[ORM\Column]
+    private ?bool $is_driver = false;
+
+    #[ORM\Column]
+    private ?bool $is_passenger = true;
+
+    #[ORM\Column]
+    private ?bool $is_supended = false;
+
+    #[ORM\ManyToOne(inversedBy: 'user')]
+    #[ORM\JoinColumn(name: "idRole", referencedColumnName: "idRole", nullable: false)]
+    private ?Role $role = null;
+
+
+    #[ORM\Column]
+    private ?\DateTimeImmutable $created_at = null;
+
+    /**
+     * @var Collection<int, Vehicule>
+     */
+    #[ORM\OneToMany(targetEntity: Vehicule::class, mappedBy: 'idDriver', orphanRemoval: true)]
+    private Collection $vehicules;
+
+    /**
+     * @var Collection<int, Covoiturage>
+     */
+    #[ORM\OneToMany(targetEntity: Covoiturage::class, mappedBy: 'idDriver', orphanRemoval: true)]
+    private Collection $covoiturages;
+
+    public function __construct()
+    {
+        $this->vehicules = new ArrayCollection();
+        $this->covoiturages = new ArrayCollection();
+    }
+
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
+
+    public function getName(): ?string
+    {
+        return $this->name;
+    }
+
+    public function setName(string $name): static
+    {
+        $this->name = $name;
+
+        return $this;
+    }
+
+    public function getFirstName(): ?string
+    {
+        return $this->firstName;
+    }
+
+    public function setFirstName(string $firstName): static
+    {
+        $this->firstName = $firstName;
+
+        return $this;
+    }
+
+    public function getPseudo(): ?string
+    {
+        return $this->pseudo;
+    }
+
+    public function setPseudo(string $pseudo): static
+    {
+        $this->pseudo = $pseudo;
+
+        return $this;
+    }
+
+    public function getEmail(): ?string
+    {
+        return $this->email;
+    }
+
+    public function setEmail(string $email): static
+    {
+        $this->email = $email;
+
+        return $this;
+    }
+
+    public function getPasswordHash(): ?string
+    {
+        return $this->password_hash;
+    }
+
+    public function setPasswordHash(string $password_hash): static
+    {
+        $this->password_hash = $password_hash;
+
+        return $this;
+    }
+
+    public function getPhoto(): ?string
+    {
+        return $this->photo;
+    }
+
+    public function setPhoto(?string $photo): static
+    {
+        $this->photo = $photo;
+
+        return $this;
+    }
+
+    public function getCredits(): ?int
+    {
+        return $this->credits;
+    }
+
+    public function setCredits(int $credits): static
+    {
+        $this->credits = $credits;
+
+        return $this;
+    }
+
+    public function isDriver(): ?bool
+    {
+        return $this->is_driver;
+    }
+
+    public function setIsDriver(bool $is_driver): static
+    {
+        $this->is_driver = $is_driver;
+
+        return $this;
+    }
+
+    public function isPassenger(): ?bool
+    {
+        return $this->is_passenger;
+    }
+
+    public function setIsPassenger(bool $is_passenger): static
+    {
+        $this->is_passenger = $is_passenger;
+
+        return $this;
+    }
+
+    public function isSupended(): ?bool
+    {
+        return $this->is_supended;
+    }
+
+    public function setIsSupended(bool $is_supended): static
+    {
+        $this->is_supended = $is_supended;
+
+        return $this;
+    }
+
+    public function getIdRole(): ?roles
+    {
+        return $this->idRole;
+    }
+
+    public function setIdRole(?roles $idRole): static
+    {
+        $this->idRole = $idRole;
+
+        return $this;
+    }
+
+    public function getCreatedAt(): ?\DateTimeImmutable
+    {
+        return $this->created_at;
+    }
+
+    public function setCreatedAt(\DateTimeImmutable $created_at): static
+    {
+        $this->created_at = $created_at;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Vehicule>
+     */
+    public function getVehicules(): Collection
+    {
+        return $this->vehicules;
+    }
+
+    public function addVehicule(Vehicule $vehicule): static
+    {
+        if (!$this->vehicules->contains($vehicule)) {
+            $this->vehicules->add($vehicule);
+            $vehicule->setIdDriver($this);
+        }
+
+        return $this;
+    }
+
+    public function removeVehicule(Vehicule $vehicule): static
+    {
+        if ($this->vehicules->removeElement($vehicule)) {
+            // set the owning side to null (unless already changed)
+            if ($vehicule->getIdDriver() === $this) {
+                $vehicule->setIdDriver(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Covoiturage>
+     */
+    public function getCovoiturages(): Collection
+    {
+        return $this->covoiturages;
+    }
+
+    public function addCovoiturage(Covoiturage $covoiturage): static
+    {
+        if (!$this->covoiturages->contains($covoiturage)) {
+            $this->covoiturages->add($covoiturage);
+            $covoiturage->setIdDriver($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCovoiturage(Covoiturage $covoiturage): static
+    {
+        if ($this->covoiturages->removeElement($covoiturage)) {
+            // set the owning side to null (unless already changed)
+            if ($covoiturage->getIdDriver() === $this) {
+                $covoiturage->setIdDriver(null);
+            }
+        }
+
+        return $this;
+    }
+}
