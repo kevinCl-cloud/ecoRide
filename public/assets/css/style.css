@@ -10,7 +10,7 @@ body {
 }
 
 .ecoride-nav {
-    max-height: 120px;
+    height: 100px;
 }
 
 .logo {
@@ -39,7 +39,7 @@ body {
 
 .footer-ecoride {
     background-color: var(--ecoride-green-dark);
-    height: 70px;
+    height: 140px;
 }
 
 .contact {
@@ -71,7 +71,7 @@ body {
     bottom: -30px; /* distance du bas */
     left: 50%;
     transform: translateX(-50%);
-    width: 1269px;
+    width: auto;
     max-width: 900px;
     height: auto;
     background-color: white;
