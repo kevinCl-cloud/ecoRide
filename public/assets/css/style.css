@@ -1,0 +1,120 @@
+:root {
+  --ecoride-green: #51BA55;
+  --ecoride-green-dark: #39893D;
+  --ecoride-soft: #f5f7f6;
+  --ecoride-text: #1f2937;
+}
+
+body {
+  font-family: 'Roboto', sans-serif;
+}
+
+.ecoride-nav {
+    max-height: 120px;
+}
+
+.logo {
+    width: 130px;
+    height: 130px;
+    background-image: url("../images/logo.png");
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+
+.eco {
+    color: var(--ecoride-green);
+    font-weight: bold;
+}
+
+.connexion {
+    background-color: var(--ecoride-green);
+    color: var(--ecoride-soft);
+}
+
+.inscription {
+    background-color: var(--ecoride-green-dark);
+    color: var(--ecoride-soft);
+    width: auto;
+}
+
+.footer-ecoride {
+    background-color: var(--ecoride-green-dark);
+    height: 70px;
+}
+
+.contact {
+    color: var(--ecoride-soft);
+}
+
+.mentions-legales {
+    color: var(--ecoride-soft);
+}
+
+.hero {
+  width: 100%;
+  height: 400px;
+  background-image: url("../images/photo_covoiturage.png");
+  background-size: cover;
+  background-position: 0% 25%; 
+  background-repeat: no-repeat;
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.hero-slogan {
+    color: var(--ecoride-soft);
+}
+
+.hero-form {
+    position: absolute;
+    bottom: -30px; /* distance du bas */
+    left: 50%;
+    transform: translateX(-50%);
+    width: 1269px;
+    max-width: 900px;
+    height: auto;
+    background-color: white;
+    border-radius: 15%;
+    box-shadow: inset;
+}
+
+.btn-ecoride {
+    color: var(--ecoride-soft);
+    background-color: var(--ecoride-green-dark);
+}
+
+.presentation {
+    margin-top: 100px;
+}
+
+.adv-icon-tirelire {    
+    width: 140px;
+    height: 128px;
+    background-image: url("../images/tirelire.png");
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+.adv-icon-planete {    
+    width: 140px;
+    height: 128px;
+    background-image: url("../images/planete.png");
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+.adv-icon-covoiturage {    
+    width: 140px;
+    height: 128px;
+    border-radius: 50%;
+    background-image: url("../images/covoiturage.png");
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+
+.eco-slogan {
+    margin: 50px;
+}
+
+.rejoindre {
+    margin-bottom: 50px;
+}

@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg bg-white border-bottom ecoride-nav">
+  <div class="container">
+    <a class="navbar-brand fw-bold d-flex align-items-center gap-2" href="#">
+        <div class="logo"></div>
+        <span>
+            <h3>
+                <span class="eco font-weight-bold">Eco</span><span class="ride">Ride</span>
+            </h3>
+        </span>
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#ecorideNav"
+            aria-controls="ecorideNav" aria-expanded="false" aria-label="Menu">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="ecorideNav">
+      <ul class="navbar-nav mx-auto mb-2 mb-lg-0 gap-lg-2">
+        <li class="nav-item"><a class="nav-link" href="#">Acceuil</a></li>
+        <li class="nav-item"><a class="nav-link" href="#">covoiturage</a></li>
+        <li class="nav-item"><a class="nav-link" href="#">A propos</a></li>
+        <li class="nav-item"><a class="nav-link" href="#">Contact</a></li>
+      </ul>
+      <div class="d-flex">
+        <a class="btn btn-sm px-3 connexion" href="#">Se connecter</a>
+        <a class="btn btn-sm px-4 inscription" href="#">S'inscrire</a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+{% block body %}{% endblock %}
+
+<footer class="footer-ecoride">
+  <div class="container text-center">
+    <div class="small fw-semibold contact">Contact: contact@ecoride.fr</div>
+    <div class="mt-1"><a class="small mentions-legales" href="#">Mentions légales</a></div>
+  </div>
+</footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+  </body>
+</html>

@@ -13,3 +13,8 @@
 
 #Ignore vscode AI rules
 .github\instructions\codacy.instructions.md
+
+###> phpunit/phpunit ###
+/phpunit.xml
+/.phpunit.cache/
+###< phpunit/phpunit ###
