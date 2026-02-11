@@ -123,8 +123,8 @@ CREATE TABLE credit_transactions (
     idUser INT,
     idReservation INT,
     amount INT UNSIGNED NOT NULL,
-    type ENUM('DEBIT','CREDIT') NOT NULL,
-    reason ENUM(
+    transactionType ENUM('DEBIT','CREDIT') NOT NULL,
+    transactionReason ENUM(
         'BONUS_INSCRIPTION',
         'PAIEMENT_RESERVATION',
         'COMMISSION_PLATEFORME',

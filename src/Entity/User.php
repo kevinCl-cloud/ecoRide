@@ -46,7 +46,7 @@ class User
     private ?bool $is_supended = false;
 
     #[ORM\ManyToOne(inversedBy: 'user')]
-    #[ORM\JoinColumn(name: "idRole", referencedColumnName: "idRole", nullable: false)]
+    #[ORM\JoinColumn(name: "idRole", referencedColumnName: "id", nullable: false)]
     private ?Role $role = null;
 
 
@@ -65,10 +65,24 @@ class User
     #[ORM\OneToMany(targetEntity: Covoiturage::class, mappedBy: 'idDriver', orphanRemoval: true)]
     private Collection $covoiturages;
 
+    /**
+     * @var Collection<int, Reservation>
+     */
+    #[ORM\OneToMany(targetEntity: Reservation::class, mappedBy: 'idUser', orphanRemoval: true)]
+    private Collection $reservations;
+
+    /**
+     * @var Collection<int, CreditTransaction>
+     */
+    #[ORM\OneToMany(targetEntity: CreditTransaction::class, mappedBy: 'idUser', orphanRemoval: true)]
+    private Collection $creditTransactions;
+
     public function __construct()
     {
         $this->vehicules = new ArrayCollection();
         $this->covoiturages = new ArrayCollection();
+        $this->reservations = new ArrayCollection();
+        $this->creditTransactions = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -274,6 +288,66 @@ class User
             // set the owning side to null (unless already changed)
             if ($covoiturage->getIdDriver() === $this) {
                 $covoiturage->setIdDriver(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Reservation>
+     */
+    public function getReservations(): Collection
+    {
+        return $this->reservations;
+    }
+
+    public function addReservation(Reservation $reservation): static
+    {
+        if (!$this->reservations->contains($reservation)) {
+            $this->reservations->add($reservation);
+            $reservation->setIdUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeReservation(Reservation $reservation): static
+    {
+        if ($this->reservations->removeElement($reservation)) {
+            // set the owning side to null (unless already changed)
+            if ($reservation->getIdUser() === $this) {
+                $reservation->setIdUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, CreditTransaction>
+     */
+    public function getCreditTransactions(): Collection
+    {
+        return $this->creditTransactions;
+    }
+
+    public function addCreditTransaction(CreditTransaction $creditTransaction): static
+    {
+        if (!$this->creditTransactions->contains($creditTransaction)) {
+            $this->creditTransactions->add($creditTransaction);
+            $creditTransaction->setIdUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCreditTransaction(CreditTransaction $creditTransaction): static
+    {
+        if ($this->creditTransactions->removeElement($creditTransaction)) {
+            // set the owning side to null (unless already changed)
+            if ($creditTransaction->getIdUser() === $this) {
+                $creditTransaction->setIdUser(null);
             }
         }
 
