@@ -137,3 +137,8 @@ body {
     margin-bottom: 50px;
 }
 
+.lien-inscription {
+    color: var(--ecoride-green-dark);
+    font-weight: 600;
+}
+

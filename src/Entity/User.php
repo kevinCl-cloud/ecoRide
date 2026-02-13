@@ -7,7 +7,19 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Doctrine\ORM\Mapping as ORM;
+
+
+
+#[UniqueEntity(
+    fields: ['email'],
+    message: 'Cet email est déjà utilisé.'
+)]
+#[UniqueEntity(
+    fields: ['pseudo'],
+    message: 'Ce pseudo est déjà utilisé.'
+)]
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
@@ -23,7 +35,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 50)]
     private ?string $firstName = null;
 
-    #[ORM\Column(length: 50)]
+    #[ORM\Column(length: 50, unique:true)]
     private ?string $pseudo = null;
 
     #[ORM\Column(length: 100, unique:true)]
@@ -50,7 +62,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\ManyToOne(inversedBy: 'user')]
     #[ORM\JoinColumn(name: "Role", referencedColumnName: "id", nullable: true)]
     private ?Role $role = null;
-
 
     #[ORM\Column]
     private ?\DateTimeImmutable $created_at = null;

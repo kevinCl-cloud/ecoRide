@@ -8,7 +8,6 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\Test\Constraint\RequestAttributeValueSame;
 use Symfony\Component\Routing\Attribute\Route;
 
 final class RegisterController extends AbstractController
@@ -24,7 +23,7 @@ final class RegisterController extends AbstractController
             $entityManager->persist($user);
             $entityManager->flush();
         }
-        
+
         return $this->render('register/index.html.twig',[
             'registerForm'=> $registerForm->createView()
         ]);
