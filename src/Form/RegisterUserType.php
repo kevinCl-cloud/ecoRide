@@ -8,10 +8,12 @@ use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+
 
 class RegisterUserType extends AbstractType
 {
@@ -26,8 +28,11 @@ class RegisterUserType extends AbstractType
             ])
             ->add('pseudo')
             ->add('email', EmailType::class)
-            ->add('password_hash', PasswordType::class, [ 
-                'label' => 'Mot de passe'
+            ->add('plainPassword', RepeatedType::class, [
+                'type' => PasswordType::class,
+                'first_options'  => ['label' => 'Mot de passe', 'hash_property_path' => 'password'],
+                'second_options' => ['label' => 'Confirmez le mot de passe'],
+                'mapped' => false,
             ])
             ->add('submit', SubmitType::class, ['attr' => [
                 "class" => "btn-ecoride",

@@ -22,7 +22,7 @@ class Vehicule
 
     #[ORM\ManyToOne(inversedBy: 'vehicules')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?brand $idBrand = null;
+    private ?Brand $idBrand = null;
 
     #[ORM\Column(type: Types::SMALLINT)]
     private ?int $placesNbr = null;

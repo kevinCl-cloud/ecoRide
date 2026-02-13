@@ -5,10 +5,12 @@ namespace App\Entity;
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
-class User
+class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -28,7 +30,7 @@ class User
     private ?string $email = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $password_hash = null;
+    private ?string $password = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $photo = null;
@@ -46,7 +48,7 @@ class User
     private ?bool $is_supended = false;
 
     #[ORM\ManyToOne(inversedBy: 'user')]
-    #[ORM\JoinColumn(name: "idRole", referencedColumnName: "id", nullable: false)]
+    #[ORM\JoinColumn(name: "Role", referencedColumnName: "id", nullable: true)]
     private ?Role $role = null;
 
 
@@ -83,6 +85,7 @@ class User
         $this->covoiturages = new ArrayCollection();
         $this->reservations = new ArrayCollection();
         $this->creditTransactions = new ArrayCollection();
+        $this->created_at = new \DateTimeImmutable();
     }
 
     public function getId(): ?int
@@ -138,15 +141,14 @@ class User
         return $this;
     }
 
-    public function getPasswordHash(): ?string
+   public function getPassword(): ?string
     {
-        return $this->password_hash;
+        return $this->password;
     }
 
-    public function setPasswordHash(string $password_hash): static
+    public function setPassword(string $password): self
     {
-        $this->password_hash = $password_hash;
-
+        $this->password = $password;
         return $this;
     }
 
@@ -210,15 +212,29 @@ class User
         return $this;
     }
 
-    public function getIdRole(): ?roles
+    public function getUserIdentifier(): string
     {
-        return $this->idRole;
+        return (string) $this->email;
     }
 
-    public function setIdRole(?roles $idRole): static
+    public function getRoles(): array
     {
-        $this->idRole = $idRole;
+        // si tu as Role en entité, retourne au moins ROLE_USER
+        return ['ROLE_USER'];
+    }
 
+    public function eraseCredentials(): void
+    {
+    }
+
+    public function getRole(): ?Role
+    {
+        return $this->role;
+    }
+
+    public function setRole(?Role $role): static
+    {
+        $this->role = $role;
         return $this;
     }
 
