@@ -29,7 +29,7 @@
                                 Connecte-toi à <span class="eco fw-bold">Eco</span><span class="ride">Ride</span> et reprends la route.
                             </p>
                         </div>
-                        <form action="{{ path('login')}}" method="post">
+                        <form action="{{ path('app_login')}}" method="post">
                             <label for="username">Email</label>
                             <input type="email" value="{{ last_username }}" name="_username" id="username" class="form-control my-3" autocomplete="email" required autofocus>
                             <label for="password">Mot de passe</label>
@@ -40,7 +40,7 @@
                                 <input type="checkbox" name="_remember_me" id="_remember_me">
                                 <label for="_remember_me">Se rappeler de moi</label>
                             </div>
-                            <input type="hidden" name="_target_path" value="{{ path('home') }}">
+                            <input type="hidden" name="_target_path" value="{{ path('app_home') }}">
                             <button class="btn btn-lg mb-3 btn-ecoride" type="submit">
                                 Se connecter
                             </button>
