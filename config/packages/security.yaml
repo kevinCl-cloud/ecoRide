@@ -22,8 +22,6 @@ security:
                 login_path: app_login
                 check_path: app_login
                 enable_csrf: true
-                always_use_default_target_path: true
-                default_target_path: app_home
                 username_parameter: _username
                 password_parameter: _password
             logout:
@@ -40,7 +38,7 @@ security:
     # Note: Only the *first* matching rule is applied
     access_control:
         # - { path: ^/admin, roles: ROLE_ADMIN }
-        - { path: ^/profile, roles: ROLE_USER }
+        - { path: ^/compte, roles: ROLE_USER }
 
 when@test:
     security:

@@ -1,0 +1,51 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<main class="flex-fill">
+    <section class="hero-others-pages">
+    <div class="hero-inner container">
+      <h3 class="display-6 fw-bold mb-2 hero-slogan">Voyagez Ecoresponsable</h3>
+      <p class="mb-3 hero-slogan">Partagez vos trajets, Economisez et protégez la planète</p>
+      <form class="d-flex flex-lg-row align-items-stretch align-items-lg-center shadow hero-form "
+            method="POST" action="#">
+        <div class="d-grid">
+          <input id="departure" name="departure" type="text" class="form-control" placeholder="Départ"/>
+        </div>
+
+        <div class="d-none d-lg-block vr"></div>
+
+        <div class="d-grid">
+          <input id="destination" name="destination" type="text" class="form-control"  placeholder="Destination"/>
+        </div>
+
+        <div class="d-none d-lg-block vr"></div>
+
+        <div class="d-grid ">
+          <input id="dateTrip" name="dateTrip" type="date" class="form-control"/>
+        </div>
+
+        <div class="d-grid button">
+          <button type="submit" class="btn btn-ecoride px-4">Recherchez</button>
+        </div>
+      </form>
+    </div>
+  </section>
+</main>
+        <div class="container my-5">
+            <div class="row justify-content-center">
+                <div class="col-md-8 col-lg-4">
+                    <div class="card shadow-lg p-4 border-0">
+                        <div class="text-center mb-1">
+                            <h2 class="titre-page">Se Connecter</h2>
+
+                        </div>
+                    </div>
+                        <div class="text-center my-3">
+                            <a href="{{ path('inscription') }}" class="text-decoration-none lien-inscription">
+                                Pas encore de compte ? Inscris-toi !
+                            </a>
+                        </div>
+                </div>
+            </div>
+        </div>
+{% endblock %}

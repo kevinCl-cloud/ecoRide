@@ -64,7 +64,7 @@ body {
   position: relative;
 }
 
-.hero-inscription {
+.hero-others-pages {
   width: 100%;
   height: 200px;
   background-image: url("../images/route_foret.jpg");
@@ -141,4 +141,3 @@ body {
     color: var(--ecoride-green-dark);
     font-weight: 600;
 }
-

@@ -13,7 +13,7 @@
 {% endif %}
 
     <main class="flex-fill">
-        <section class="hero-inscription">
+        <section class="hero-others-pages">
             <div class="hero-inner container">
             <h3 class="display-6 fw-bold mb-2 hero-slogan">Voyagez Ecoresponsable</h3>
             <p class="mb-3 hero-slogan">Partagez vos trajets, Economisez et protégez la planète</p>
@@ -35,13 +35,8 @@
                             <label for="password">Mot de passe</label>
                             <input type="password" name="_password" id="password" class="form-control my-3" autocomplete="current-password" required>
                             <input type="hidden" name="_csrf_token" data-controller="csrf-protection" value="{{ csrf_token('authenticate') }}">
-
-                            <div class="checkbox my-3">
-                                <input type="checkbox" name="_remember_me" id="_remember_me">
-                                <label for="_remember_me">Se rappeler de moi</label>
-                            </div>
-                            <input type="hidden" name="_target_path" value="{{ path('app_home') }}">
-                            <button class="btn btn-lg mb-3 btn-ecoride" type="submit">
+                            <input type="hidden" name="_target_path" value="{{ path('app_account') }}">
+                            <button class="btn btn-lg my-3 btn-ecoride" type="submit">
                                 Se connecter
                             </button>
                         </form>
