@@ -137,7 +137,38 @@ body {
     margin-bottom: 50px;
 }
 
-.lien-inscription {
+.lien {
     color: var(--ecoride-green-dark);
     font-weight: 600;
+    text-decoration: none;
+}
+
+.photo-utilisateur {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    object-fit: cover; 
+    display: block;
+}
+
+.photo-chauffeur {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    object-fit: cover; 
+    display: block;
+}
+
+.photo {
+    width: 90px;
+    height: 90px;
+    overflow: hidden;    
+    border-radius: 50%;
+}
+
+.carte-chauffeur {
+    border: solid;
+    border-color: var(--ecoride-green-dark);
+    border-radius: 50px;
+    height: auto;
 }
