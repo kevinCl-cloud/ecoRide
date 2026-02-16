@@ -172,3 +172,8 @@ body {
     border-radius: 50px;
     height: auto;
 }
+
+.carte-vehicule {
+    border: solid;
+    border-color: var(--ecoride-green-dark);
+}

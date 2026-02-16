@@ -1,0 +1,108 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+	<main class="flex-fill">
+		<section class="hero-others-pages">
+			<div class="hero-inner container">
+				<h3 class="display-6 fw-bold mb-2 hero-slogan">Voyagez Ecoresponsable</h3>
+				<p class="mb-3 hero-slogan">Partagez vos trajets, Economisez et protégez la planète</p>
+			</div>
+		</section>
+		<div class="container my-5">
+			<div class="row justify-content-center">
+				<div class="col-md-8 col-lg-4">
+					<div class="card shadow-lg p-4 border-0">
+						<div class="text-center mb-1">
+							<h2 class="titre-page">Devenir chauffeur</h2>
+							<p>
+								Devenez chauffeur
+								<span class="eco fw-bold">Eco</span>
+								<span class="ride">Ride</span>
+								et transformez vos trajets quotidiens en opportunités.
+							</p>
+						</div>
+						<form
+							action="{{ path('app_driver')}}" method="post">
+
+							<!-- Marque (saisie libre) -->
+							<div class="mb-3">
+								<label class="form-label">Marque du véhicule</label>
+								<input type="text" name="brand" class="form-control" placeholder="Ex : Renault, Peugeot, Tesla..." required>
+							</div>
+
+							<!-- Modèle -->
+							<div class="mb-3">
+								<label class="form-label">Modèle</label>
+								<input type="text" name="model" class="form-control" required>
+							</div>
+
+							<!-- Couleur -->
+							<div class="mb-3">
+								<label class="form-label">Couleur</label>
+								<input type="text" name="color" class="form-control" required>
+							</div>
+
+							<!-- Immatriculation -->
+							<div class="mb-3">
+								<label class="form-label">Immatriculation</label>
+								<input type="text" name="registration" class="form-control" required>
+							</div>
+
+							<!-- Première mise en circulation -->
+							<div class="mb-3">
+								<label class="form-label">Première mise en circulation</label>
+								<input type="date" name="firstRegistration" class="form-control" required>
+							</div>
+
+							<!-- Energie -->
+							<div class="mb-3">
+								<label class="form-label">Type d'énergie</label>
+								<select name="energie" class="form-select" required>
+									<option value="">-- Sélectionner --</option>
+									<option value="Essence">Essence</option>
+									<option value="Diesel">Diesel</option>
+									<option value="Hybride">Hybride</option>
+									<option value="Electrique">Electrique</option>
+								</select>
+							</div>
+
+							<!-- Nombre de places -->
+							<div class="mb-3">
+								<label class="form-label">Nombre de places disponibles</label>
+								<input type="number" name="placesNbr" class="form-control" min="1" max="8" required>
+							</div>
+
+							<hr class="my-4">
+
+							<h5 class="mb-3">Préférences</h5>
+
+							<!-- Animaux -->
+							<div class="mb-3">
+								<label class="form-label">Acceptez-vous les animaux ?</label>
+								<select name="petsAllowed" class="form-select" required>
+									<option value="1">Oui</option>
+									<option value="0">Non</option>
+								</select>
+							</div>
+
+							<!-- Fumeur -->
+							<div class="mb-3">
+								<label class="form-label">Autorisez-vous les passagers à fumer ?</label>
+								<select name="smokingAllowed" class="form-select" required>
+									<option value="1">Oui</option>
+									<option value="0">Non</option>
+								</select>
+							</div>
+
+							<button class="btn btn-lg my-3 btn-ecoride" type="submit">
+								Validez les informations
+							</button>
+						</form>
+					</div>
+
+				</div>
+			</div>
+		</div>
+	</main>
+{% endblock %}

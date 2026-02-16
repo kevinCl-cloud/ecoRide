@@ -29,16 +29,16 @@
 			<div class="text-center my-4">
 				<h2 class="titre-page">Espace personnel</h2>
 				<p>
-					Bienvenue sur votre espace personnel, Utilisateur !
-																		Voici votre tableau de bord personnel sur
-					<span class="eco fw-bold">Eco</span>
-					<span class="ride">Ride</span>.
+					Bienvenue sur votre espace personnel, <span class="eco fw-bold text-capitalize">{{ app.user.firstName }}</span> ! Voici votre tableau de bord personnel sur
+					<span class="eco fw-bold">Eco</span><span class="ride">Ride</span>.
 				</p>
 			</div>
 			<div class="row justify-content-center">
 				<div class="col-md-12 col-lg-6">
-					<div class="card shadow-lg p-3 border-0">
-						<div class="py-2 px-3 rounded border-bottom d-flex gap-3 align-items-center justify-content-between carte-utilisateur">
+					<div
+						class="card shadow-lg p-3 border-0">
+						<!-- photo + pseudo utilisateur -->
+						<div class="py-2 px-3rounded border-bottom d-flex gap-3 align-items-center justify-content-between carte-utilisateur">
 							<div class="d-flex  align-items-center gap-2">
 								<div class=" photo">
 									<img class="photo-utilisateur" src="{{ asset("assets/images/photo1.png") }}" alt="photo profile utilisateur"></img>
@@ -56,35 +56,105 @@
 					</div>
 
 					<div
-						class="d-flex gap-2 mt-3">
+						class="d-flex align-items-center gap-2 mt-3">
 
 						<!-- Passager : toujours actif -->
-						<button type="button" class="btn btn-outline-success active" disabled>
+						<button type="button" class="btn btn-outline-success p-2 active" disabled>
 							Passager
 						</button>
 
-						<!-- Chauffeur -->
-						<button type="button" class="btn {{ app.user.isDriver ? 'btn-success' : 'btn-outline-success' }}">
-							{{ app.user.isDriver ? 'Chauffeur activé' : 'Devenir chauffeur' }}
-						</button>
+						<!-- devenir Chauffeur -->
+						{% if app.user.isDriver %}
+							<button type="button" class="btn btn-success btn-ecoride ">
+								Chauffeur activé
+							</button>
+
+							<!-- Nouveau bouton créer trajet -->
+							<a href="{{ path('app_make_covoiturage') }}" class="btn btn-ecoride px-3">
+								+ Créer un trajet
+							</a>
+						{% else %}
+							<a class="btn btn-sm p-2 btn-ecoride" href="{{ path('app_driver') }}">
+								Devenir chauffeur
+							</a>
+						{% endif %}
 
 					</div>
 
+					{% if app.user.isDriver and app.user.vehicules|length > 0 %}
 
-					<!-- Affichage des reservations -->
+						<div class="p-3 border-0 mt-4">
+							<div class="d-flex justify-content-between align-items-center mb-3">
+								<h6 class="mb-0">Mon véhicule</h6>
+							</div>
+
+							{% for vehicule in app.user.vehicules %}
+								<div
+									class="card shadow-sm border-0 mb-3 carte-vehicule">
+
+									<!-- Header véhicule -->
+									<div class="d-flex justify-content-between align-items-center px-3 py-2 border-bottom">
+										<div>
+											<h6 class="mb-0 fw-bold">
+												{{ vehicule.idBrand.libel }}
+												{{ vehicule.model }}
+											</h6>
+											<small class="text-muted">
+												{{ vehicule.color }}
+												•
+												{{ vehicule.energy }}
+											</small>
+										</div>
+
+										<span class="badge bg-success px-3 py-2 btn-ecoride">
+											{{ vehicule.placesNbr }}
+											places
+										</span>
+									</div>
+
+									<div class="row text-center py-3">
+
+										<div class="col-4 border-end">
+											<small class="text-muted d-block">Marque</small>
+											<span class="fw-semibold">{{ vehicule.idBrand.libel }}</span>
+										</div>
+
+										<div class="col-4 border-end">
+											<small class="text-muted d-block">Modèle</small>
+											<span class="fw-semibold">{{ vehicule.model }}</span>
+										</div>
+
+										<div class="col-4">
+											<small class="text-muted d-block">Énergie</small>
+											<span class="fw-semibold">{{ vehicule.energy }}</span>
+										</div>
+
+									</div>
+
+								</div>
+
+							{% endfor %}
+						</div>
+
+					{% endif %}
+				</div>
+
+				<div
+					class="card my-3 shadow-lg p-3 border-0">
+					<!-- Affichage des covoiturages -->
 					<div class="gap-3 my-3 d-flex align-items-center justify-content-between">
 						<div class="p-3">
 							<h6>
-								Mes reservations
+								Mes Reservations
 							</h6>
 						</div>
 						<a href="#" class="lien px-2">
 							Voir toutes mes reservations
 						</a>
 					</div>
-
-					<div class="gap-3 carte-chauffeur">
-						<div class=" border-bottom px-3 pt-2 rounded d-flex gap-3 align-items-center justify-content-between carte-utilisateur">
+					<!-- liste des reservations -->
+					<div class="gap-3 mx-3 carte-chauffeur">
+						<div class=" border-bottom px-3 pt-2 rounded d-flex gap-3 align-items-center justify-content-between">
 							<div class=" mh-50 d-flex align-items-center gap-3">
 								<div class="photo ms-2">
 									<img class="photo-chauffeur" src="{{ asset("assets/images/photo1.png") }}" alt="photo profile utilisateur"></img>
@@ -97,21 +167,19 @@
 								</p>
 							</div>
 						</div>
+
 						<!-- Affichage infos covoiturage -->
 						<div
 							class="col-md-6 d-flex justify-content-center align-items-center gap-4">
-
 							<!-- Départ -->
 							<div class="d-flex flex-column text-center">
 								<span class="fw-semibold">10:00</span>
 								<span class="text-muted">Paris</span>
 							</div>
-
 							<!-- Durée -->
 							<div class="text-center">
 								<span>----- 6H -----</span>
 							</div>
-
 							<!-- Arrivée -->
 							<div class="d-flex flex-column text-center">
 								<span class="fw-semibold">16:00</span>
@@ -119,19 +187,16 @@
 							</div>
 
 						</div>
-
-
 					</div>
+
 					<!-- Affichage infos reservations-->
 					<div class="p-3 d-flex justify-content-between">
 						<div class="text-center">
 							<span>lundi 23 juillet</span>
 						</div>
-
 						<div class="text-center">
 							<span>places disponible</span>
 						</div>
-
 						<div class="text-center">
 							<span>voyage écologique</span>
 						</div>
@@ -139,5 +204,72 @@
 
 				</div>
 			</div>
-		</main>
-	{% endblock %}
+
+
+			<div
+				class="card my-3 shadow-lg p-3 border-0">
+				<!-- Affichage des covoiturages -->
+				<div class="gap-3 my-3 d-flex align-items-center justify-content-between">
+					<div class="p-3">
+						<h6>
+							Mes Covoiturages
+						</h6>
+					</div>
+					<a href="#" class="lien px-2">
+						Voir tous mes covoiturages
+					</a>
+				</div>
+				<!-- liste des covoiturages -->
+				<div class="gap-3 mx-3 carte-chauffeur">
+					<div class=" border-bottom px-3 pt-2 rounded d-flex gap-3 align-items-center justify-content-between">
+						<div class=" mh-50 d-flex align-items-center gap-3">
+							<div class="photo ms-2">
+								<img class="photo-chauffeur" src="{{ asset("assets/images/photo1.png") }}" alt="photo profile utilisateur"></img>
+						</div>
+						<div class="text-center pe-2">
+							<h5>
+								{{ app.user.name}}
+							</h5>
+							<p>⭐ 5
+							</p>
+						</div>
+					</div>
+
+					<!-- Affichage infos covoiturage -->
+					<div
+						class="col-md-6 d-flex justify-content-center align-items-center gap-4">
+						<!-- Départ -->
+						<div class="d-flex flex-column text-center">
+							<span class="fw-semibold">10:00</span>
+							<span class="text-muted">Paris</span>
+						</div>
+						<!-- Durée -->
+						<div class="text-center">
+							<span>----- 6H -----</span>
+						</div>
+						<!-- Arrivée -->
+						<div class="d-flex flex-column text-center">
+							<span class="fw-semibold">16:00</span>
+							<span class="text-muted">Marseille</span>
+						</div>
+
+					</div>
+				</div>
+
+				<!-- Affichage infos reservations-->
+				<div class="p-3 d-flex justify-content-between">
+					<div class="text-center">
+						<span>lundi 23 juillet</span>
+					</div>
+					<div class="text-center">
+						<span>places disponible</span>
+					</div>
+					<div class="text-center">
+						<span>voyage écologique</span>
+					</div>
+				</div>
+
+			</div>
+		</div>
+	</main>
+{% endblock %}

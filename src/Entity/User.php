@@ -51,13 +51,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?int $credits = 20;
 
     #[ORM\Column]
-    private ?bool $is_driver = false;
+    private ?bool $isDriver = false;
 
     #[ORM\Column]
-    private ?bool $is_passenger = true;
+    private ?bool $isPassenger = true;
 
     #[ORM\Column]
-    private ?bool $is_supended = false;
+    private ?bool $isSupended = false;
 
     #[ORM\ManyToOne(inversedBy: 'user')]
     #[ORM\JoinColumn(name: "Role", referencedColumnName: "id", nullable: true)]
@@ -89,6 +89,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     #[ORM\OneToMany(targetEntity: CreditTransaction::class, mappedBy: 'idUser', orphanRemoval: true)]
     private Collection $creditTransactions;
+
+    #[ORM\Column(nullable: true)]
+    private ?bool $smokingAllowed = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?bool $petsAllowed = null;
 
     public function __construct()
     {
@@ -189,36 +195,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function isDriver(): ?bool
     {
-        return $this->is_driver;
+        return $this->isDriver;
     }
 
-    public function setIsDriver(bool $is_driver): static
+    public function setIsDriver(bool $isDriver): static
     {
-        $this->is_driver = $is_driver;
+        $this->isDriver = $isDriver;
 
         return $this;
     }
 
     public function isPassenger(): ?bool
     {
-        return $this->is_passenger;
+        return $this->isPassenger;
     }
 
-    public function setIsPassenger(bool $is_passenger): static
+    public function setIsPassenger(bool $isPassenger): static
     {
-        $this->is_passenger = $is_passenger;
+        $this->isPassenger = $isPassenger;
 
         return $this;
     }
 
     public function isSupended(): ?bool
     {
-        return $this->is_supended;
+        return $this->isSupended;
     }
 
-    public function setIsSupended(bool $is_supended): static
+    public function setIsSupended(bool $isSupended): static
     {
-        $this->is_supended = $is_supended;
+        $this->isSupended = $isSupended;
 
         return $this;
     }
@@ -377,6 +383,30 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
                 $creditTransaction->setIdUser(null);
             }
         }
+
+        return $this;
+    }
+
+    public function isSmokingAllowed(): ?bool
+    {
+        return $this->smokingAllowed;
+    }
+
+    public function setSmokingAllowed(?bool $smokingAllowed): static
+    {
+        $this->smokingAllowed = $smokingAllowed;
+
+        return $this;
+    }
+
+    public function isPetsAllowed(): ?bool
+    {
+        return $this->petsAllowed;
+    }
+
+    public function setPetsAllowed(?bool $petsAllowed): static
+    {
+        $this->petsAllowed = $petsAllowed;
 
         return $this;
     }

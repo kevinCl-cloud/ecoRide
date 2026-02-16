@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20260214094946 extends AbstractMigration
+final class Version20260216111927 extends AbstractMigration
 {
     public function getDescription(): string
     {
@@ -26,7 +26,7 @@ final class Version20260214094946 extends AbstractMigration
         $this->addSql('CREATE TABLE notice (id INT AUTO_INCREMENT NOT NULL, rating SMALLINT NOT NULL, comment_notice LONGTEXT NOT NULL, status VARCHAR(255) NOT NULL, created_at DATETIME NOT NULL, id_reservation_id INT NOT NULL, INDEX IDX_480D45C285542AE1 (id_reservation_id), PRIMARY KEY (id)) DEFAULT CHARACTER SET utf8mb4');
         $this->addSql('CREATE TABLE reservation (id INT AUTO_INCREMENT NOT NULL, status VARCHAR(255) NOT NULL, created_at DATETIME NOT NULL, id_user_id INT NOT NULL, id_covoiturage_id INT NOT NULL, INDEX IDX_42C8495579F37AE5 (id_user_id), INDEX IDX_42C849555F01A896 (id_covoiturage_id), PRIMARY KEY (id)) DEFAULT CHARACTER SET utf8mb4');
         $this->addSql('CREATE TABLE role (id INT AUTO_INCREMENT NOT NULL, libel VARCHAR(50) NOT NULL, PRIMARY KEY (id)) DEFAULT CHARACTER SET utf8mb4');
-        $this->addSql('CREATE TABLE user (id INT AUTO_INCREMENT NOT NULL, name VARCHAR(50) NOT NULL, first_name VARCHAR(50) NOT NULL, pseudo VARCHAR(50) NOT NULL, email VARCHAR(100) NOT NULL, password VARCHAR(255) NOT NULL, photo VARCHAR(255) DEFAULT NULL, credits INT NOT NULL, is_driver TINYINT NOT NULL, is_passenger TINYINT NOT NULL, is_supended TINYINT NOT NULL, created_at DATETIME NOT NULL, Role INT DEFAULT NULL, UNIQUE INDEX UNIQ_8D93D64986CC499D (pseudo), UNIQUE INDEX UNIQ_8D93D649E7927C74 (email), INDEX IDX_8D93D649F75B2554 (Role), PRIMARY KEY (id)) DEFAULT CHARACTER SET utf8mb4');
+        $this->addSql('CREATE TABLE user (id INT AUTO_INCREMENT NOT NULL, name VARCHAR(50) NOT NULL, first_name VARCHAR(50) NOT NULL, pseudo VARCHAR(50) NOT NULL, email VARCHAR(100) NOT NULL, password VARCHAR(255) NOT NULL, photo VARCHAR(255) DEFAULT NULL, credits INT NOT NULL, is_driver TINYINT NOT NULL, is_passenger TINYINT NOT NULL, is_supended TINYINT NOT NULL, created_at DATETIME NOT NULL, smoking_allowed TINYINT DEFAULT NULL, pets_allowed TINYINT DEFAULT NULL, Role INT DEFAULT NULL, UNIQUE INDEX UNIQ_8D93D64986CC499D (pseudo), UNIQUE INDEX UNIQ_8D93D649E7927C74 (email), INDEX IDX_8D93D649F75B2554 (Role), PRIMARY KEY (id)) DEFAULT CHARACTER SET utf8mb4');
         $this->addSql('CREATE TABLE vehicule (id INT AUTO_INCREMENT NOT NULL, places_nbr SMALLINT NOT NULL, model VARCHAR(50) NOT NULL, color VARCHAR(50) NOT NULL, registration VARCHAR(50) NOT NULL, first_registration DATE NOT NULL, energy VARCHAR(50) NOT NULL, id_driver_id INT NOT NULL, id_brand_id INT NOT NULL, INDEX IDX_292FFF1D4377852E (id_driver_id), INDEX IDX_292FFF1D142E3C9D (id_brand_id), PRIMARY KEY (id)) DEFAULT CHARACTER SET utf8mb4');
         $this->addSql('ALTER TABLE covoiturage ADD CONSTRAINT FK_28C79E894377852E FOREIGN KEY (id_driver_id) REFERENCES user (id)');
         $this->addSql('ALTER TABLE covoiturage ADD CONSTRAINT FK_28C79E895258F8E6 FOREIGN KEY (id_vehicule_id) REFERENCES vehicule (id)');
