@@ -49,7 +49,7 @@ class Covoiturage
     #[ORM\Column(enumType: CovoiturageStatus::class)]
     private ?CovoiturageStatus $statut = CovoiturageStatus::PREVU;
 
-    #[ORM\Column]
+    #[ORM\Column(name: 'create_at', type: 'datetime_immutable')]
     private ?\DateTimeImmutable $create_at = null;
 
     /**
@@ -61,6 +61,7 @@ class Covoiturage
     public function __construct()
     {
         $this->reservations = new ArrayCollection();
+        $this->create_at = new \DateTimeImmutable();
     }
 
     public function getId(): ?int

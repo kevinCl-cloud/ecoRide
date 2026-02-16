@@ -1,45 +1,32 @@
 {% extends 'base.html.twig' %}
 
 
-
 {% block body %}
 
-    <main class="flex-fill">
-        <section class="hero-others-pages">
-            <div class="hero-inner container">
-            <h3 class="display-6 fw-bold mb-2 hero-slogan">Voyagez Ecoresponsable</h3>
-            <p class="mb-3 hero-slogan">Partagez vos trajets, Economisez et protégez la planète</p>
-            </div>
-        </section>
-        <div class="container my-5">
-            <div class="row justify-content-center">
-                <div class="col-md-8 col-lg-4">
-                    <div class="card shadow-lg p-4 border-0">
-                        <div class="text-center mb-1">
-                            <h2 class="titre-page">Se Connecter</h2>
-                            <p>
-                                Connecte-toi à <span class="eco fw-bold">Eco</span><span class="ride">Ride</span> et reprends la route.
-                            </p>
-                        </div>
-                        <form action="{{ path('app_login')}}" method="post">
-                            <label for="username">Email</label>
-                            <input type="email" value="{{ last_username }}" name="_username" id="username" class="form-control my-3" autocomplete="email" required autofocus>
-                            <label for="password">Mot de passe</label>
-                            <input type="password" name="_password" id="password" class="form-control my-3" autocomplete="current-password" required>
-                            <input type="hidden" name="_csrf_token" data-controller="csrf-protection" value="{{ csrf_token('authenticate') }}">
-                            <input type="hidden" name="_target_path" value="{{ path('app_account') }}">
-                            <button class="btn btn-lg my-3 btn-ecoride" type="submit">
-                                Se connecter
-                            </button>
-                        </form>
-                    </div>
-                        <div class="text-center my-3">
-                            <a href="{{ path('inscription') }}" class="text-decoration-none lien">
-                                Pas encore de compte ? Inscris-toi !
-                            </a>
-                        </div>
-                </div>
-            </div>
-        </div>
-    </main>
-{% endblock %}
+	<main class="flex-fill">
+		<section class="hero-others-pages">
+			<div class="hero-inner container">
+				<h3 class="display-6 fw-bold mb-2 hero-slogan">Voyagez Ecoresponsable</h3>
+				<p class="mb-3 hero-slogan">Partagez vos trajets, Economisez et protégez la planète</p>
+			</div>
+		</section>
+		<div class="container my-5">
+			<div class="row justify-content-center">
+				<div class="col-md-8 col-lg-4">
+					<div class="card shadow-lg p-4 border-0">
+						<div class="text-center mb-4">
+							<h2 class="titre-page">Inscription</h2>
+							<p>
+								Rejoins
+								<span class="eco fw-bold">Eco</span>
+								<span class="ride">Ride</span>
+								et commence à covoiturer.
+							</p>
+						</div>
+						{{ form(covoiturageForm) }}
+						</div>
+					</div>
+				</div>
+			</div>
+		</main>
+	{% endblock %}
