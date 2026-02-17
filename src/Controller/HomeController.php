@@ -20,6 +20,14 @@ final class HomeController extends AbstractController
         $covoiturageForm = $this->createForm(CovoiturageSearchType::class, $search);
         $covoiturageForm->handleRequest($request);
 
+        if($covoiturageForm->isSubmitted() && $covoiturageForm->isValid()){
+            return $this->redirectToRoute('app_covoiturage_list', [
+                'placeDeparture' => $search->getPlaceDeparture(),
+                'placeArrival' => $search->getPlaceArrival(),
+                'dateDeparture' => $search->getDateDeparture(),
+            ]);
+        }
+
         $covoiturages = $repository->search($search);
 
         return $this->render('home/index.html.twig', [

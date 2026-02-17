@@ -5,51 +5,54 @@
   --ecoride-text: #1f2937;
 }
 
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
 body {
   font-family: 'Roboto', sans-serif;
   background-color: #f3f4f6;
 }
 
 .ecoride-nav {
-    height: 100px;
-    background-color: #f3f4f6;
+  height: 100px;
+  background-color: #f3f4f6;
 }
 
 .logo {
-    width: 130px;
-    height: 130px;
-    background-image: url("../images/logo.png");
-    background-size: cover;
-    background-repeat: no-repeat;
+  width: 130px;
+  height: 130px;
+  background-image: url("../images/logo.png");
+  background-size: cover;
+  background-repeat: no-repeat;
 }
 
 .eco {
-    color: var(--ecoride-green);
-    font-weight: bold;
+  color: var(--ecoride-green);
+  font-weight: bold;
 }
 
 .connexion {
-    background-color: var(--ecoride-green);
-    color: var(--ecoride-soft);
+  background-color: var(--ecoride-green);
+  color: var(--ecoride-soft);
 }
 
 .inscription {
-    background-color: var(--ecoride-green-dark);
-    color: var(--ecoride-soft);
-    width: auto;
+  background-color: var(--ecoride-green-dark);
+  color: var(--ecoride-soft);
+  width: auto;
 }
 
 .footer-ecoride {
-    background-color: var(--ecoride-green-dark);
-    height: 140px;
+  background-color: var(--ecoride-green-dark);
+  height: 140px;
 }
 
-.contact {
-    color: var(--ecoride-soft);
-}
-
+.contact,
 .mentions-legales {
-    color: var(--ecoride-soft);
+  color: var(--ecoride-soft);
 }
 
 .hero-acceuil {
@@ -57,7 +60,7 @@ body {
   height: 400px;
   background-image: url("../images/photo_covoiturage.png");
   background-size: cover;
-  background-position: 0% 25%; 
+  background-position: 0% 25%;
   background-repeat: no-repeat;
   display: flex;
   align-items: center;
@@ -70,7 +73,7 @@ body {
   height: 200px;
   background-image: url("../images/route_foret.jpg");
   background-size: cover;
-  background-position: 0% 40%; 
+  background-position: 0% 40%;
   background-repeat: no-repeat;
   display: flex;
   align-items: center;
@@ -79,152 +82,163 @@ body {
 }
 
 .hero-slogan {
-    color: var(--ecoride-soft);
+  color: var(--ecoride-soft);
 }
 
 .hero-form {
-    position: absolute;
-    bottom: -30px; /* distance du bas */
-    left: 50%;
-    transform: translateX(-50%);
-    width: auto;
-    max-width: 900px;
-    height: auto;
-    background-color: white;
-    border-radius: 15%;
-    box-shadow: inset;
+  position: absolute;
+  bottom: -30px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: auto;
+  max-width: 900px;
+  height: auto;
+  background-color: white;
+  border-radius: 15%;
 }
 
 .btn-ecoride {
-    color: var(--ecoride-soft);
-    background-color: var(--ecoride-green-dark);
-    border-radius: 999px;
-    padding: 10px 18px;
-    font-weight: 600;
-}
-
-.presentation {
-    margin-top: 100px;
-}
-
-.adv-icon-tirelire {    
-    width: 140px;
-    height: 128px;
-    background-image: url("../images/tirelire.png");
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-color: inherit;
-    background-position: 50% 0%;
-}
-.adv-icon-planete {    
-    width: 140px;
-    height: 128px;
-    background-image: url("../images/planete.png");
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-position: 50% 0%;
-}
-.adv-icon-covoiturage {    
-    width: 140px;
-    height: 128px;
-    border-radius: 50%;
-    background-image: url("../images/covoiturage.png");
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-position: 50% 0%;
-}
-
-.eco-slogan {
-    margin: 50px;
-}
-
-.rejoindre {
-    margin-bottom: 50px;
-}
-
-.lien {
-    color: var(--ecoride-green-dark);
-    font-weight: 600;
-    text-decoration: none;
-}
-
-.photo-utilisateur {
-    width: 90px;
-    height: 90px;
-    border-radius: 50%;
-    object-fit: cover; 
-    display: block;
-}
-
-.photo-chauffeur {
-    width: 70px;
-    height: 70px;
-    border-radius: 50%;
-    object-fit: cover; 
-    display: block;
-}
-
-.photo {
-    width: 90px;
-    height: 90px;
-    overflow: hidden;    
-    border-radius: 50%;
-}
-
-.carte-chauffeur {
-    border: solid;
-    border-color: var(--ecoride-green-dark);
-    border-radius: 50px;
-    height: auto;
-}
-
-.carte-vehicule {
-    border: solid;
-    border-color: var(--ecoride-green-dark);
-}
-
-.search-bar-inner{
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 6px 10px;      
-  border-radius: 999px;
-  background: #fff;
-  border: 1px solid rgba(0,0,0,0.08);
-  max-width: 850px;      
-}
-
-.search-field{
-  flex: 1;
-}
-
-.search-date{
-  flex: 0 0 150px;        
-}
-
-.search-field input{
-  border: none !important;
-  box-shadow: none !important;
-  background: transparent !important;
-  padding: 6px 10px;      
-  font-size: 14px;        
-}
-
-.search-btn{
-  border-radius: 999px;
-  padding: 6px 14px;      
-  font-size: 14px;
+  color: var(--ecoride-soft);
+  background-color: var(--ecoride-green-dark);
+  padding: 5px 18px;
   font-weight: 600;
 }
 
-.search-bar-wrapper{
-    position: relative;
-    margin-top: -40px; 
-    z-index: 10;
+.presentation {
+  margin-top: 100px;
 }
 
-/* donne un effet flottant */
-.search-bar-inner{
-    background: white;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+.adv-icon-tirelire {
+  width: 140px;
+  height: 128px;
+  background-image: url("../images/tirelire.png");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: 50% 0%;
+}
+
+.adv-icon-planete {
+  width: 140px;
+  height: 128px;
+  background-image: url("../images/planete.png");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: 50% 0%;
+}
+
+.adv-icon-covoiturage {
+  width: 140px;
+  height: 128px;
+  border-radius: 50%;
+  background-image: url("../images/covoiturage.png");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: 50% 0%;
+}
+
+.eco-slogan {
+  margin: 50px;
+}
+
+.rejoindre {
+  margin-bottom: 50px;
+}
+
+.lien {
+  color: var(--ecoride-green-dark);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.photo-utilisateur {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  object-fit: cover;
+  display: block;
+}
+
+.photo-chauffeur {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  object-fit: cover;
+  display: block;
+}
+
+.photo {
+  width: 90px;
+  height: 90px;
+  overflow: hidden;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.carte-chauffeur {
+  border: solid;
+  border-color: var(--ecoride-green-dark);
+  border-radius: 50px;
+  width: 100%;
+  overflow: hidden;
+}
+
+.carte-chauffeur * {
+  min-width: 0;
+  word-break: break-word;
+}
+
+.carte-vehicule {
+  border: solid;
+  border-color: var(--ecoride-green-dark);
+}
+
+.search-bar-inner {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  max-width: 850px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+}
+
+.search-field {
+  flex: 1 1 120px;
+  min-width: 0;
+}
+
+.search-date {
+  flex: 0 1 150px;
+}
+
+.search-field input {
+  border: none !important;
+  box-shadow: none !important;
+  background: transparent !important;
+  padding: 6px 10px;
+  font-size: 14px;
+  width: 100%;
+}
+
+.search-btn {
+  border-radius: 999px;
+  padding: 6px 14px;
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.search-bar-wrapper {
+  position: relative;
+  margin-top: -40px;
+  z-index: 10;
+}
+
+.filtre {
+    border: solid;
+    border-radius: 25px;
+    border-color: var(--ecoride-green);
+    height: 440px;
 }

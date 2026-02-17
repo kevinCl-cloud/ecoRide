@@ -245,4 +245,16 @@ class Covoiturage
 
         return $this;
     }
+
+    public function getTravelTimeFormatted(): ?string
+    {
+        if ($this->travelTime === null) {
+            return null;
+        }
+
+        $h = intdiv($this->travelTime, 60);
+        $m = $this->travelTime % 60;
+
+        return sprintf('%dh%02d', $h, $m);
+    }
 }

@@ -2,38 +2,179 @@
 
 {% block body %}
 
-<main class="flex-fill">
-    <section class="hero-others-pages">
-        <div class="hero-inner container">
-            <h3 class="display-6 fw-bold mb-2 hero-slogan">Voyagez Ecoresponsable</h3>
-            <p class="mb-3 hero-slogan">Partagez vos trajets, Economisez et protégez la planète</p>
-        </div>
-    </section>
+	<main
+		class="flex-fill">
+		{# HERO #}
+		<section class="hero-others-pages">
+			<div class="hero-inner container">
+				<h3 class="display-6 fw-bold mb-2 hero-slogan">Voyagez Ecoresponsable</h3>
+				<p class="mb-3 hero-slogan">Partagez vos trajets, Economisez et protégez la planète</p>
+			</div>
+		</section>
 
-    {% include 'search_bar.html.twig' %}
+		{# BARRE DE RECHERCHE (INCLUDE) #}
+		<div class="search-bar-wrapper">
+			{% include 'search_bar.html.twig' %}
+		</div>
+
+		{# CONTENU PAGE : FILTRES + RESULTATS #}
+		<div class="container my-5">
+			<div
+				class="row g-4 p-4 justify-content-center">
+
+				{# COLONNE FILTRES #}
+				<div class="col-12 col-sm-12 col-sm-12 col-lg-3 mh-50 filtre">
+					<div class="filters-box p-3">
+						<h5 class="mb-3">Filtres</h5>
+
+						<form
+							method="get" action="{{ path('app_covoiturage_list') }}">
+							{# FILTRE : ENERGIE #}
+							<div class="mb-3 ">
+								{% set searchQuery = app.request.query.all('covoiturage_search') %}
+
+								<input type="hidden" name="covoiturage_search[placeDeparture]" value="{{ searchQuery.placeDeparture ?? '' }}">
+								<input type="hidden" name="covoiturage_search[placeArrival]" value="{{ searchQuery.placeArrival ?? '' }}">
+								<input type="hidden" name="covoiturage_search[dateDeparture]" value="{{ searchQuery.dateDeparture ?? '' }}">
+
+								<label class="form-label fw-semibold">Energie</label>
+								<select class="form-select form-select-sm filters-control" name="energy">
+									<option value="" {{ app.request.query.get('energy') == '' ? 'selected' : '' }}>Toutes</option>
+									<option value="Electrique" {{ app.request.query.get('energy') == 'Electrique' ? 'selected' : '' }}>Electrique</option>
+									<option value="Hybride" {{ app.request.query.get('energy') == 'Hybride' ? 'selected' : '' }}>Hybride</option>
+									<option value="Essence" {{ app.request.query.get('energy') == 'Essence' ? 'selected' : '' }}>Essence</option>
+									<option value="Diesel" {{ app.request.query.get('energy') == 'Diesel' ? 'selected' : '' }}>Diesel</option>
+								</select>
+							</div>
+
+							{# FILTRE : PRIX MAX #}
+							<div class="mb-3">
+								<label class="form-label fw-semibold">Prix maximum</label>
+
+								<input type="number" name="maxPrice" class="form-control form-control-sm filters-control" min="0" max="100" step="1" value="{{ app.request.query.get('maxPrice') ?? '' }}" placeholder="Ex: 15">
+							</div>
 
 
-    {# RESULTATS #}
-    <div class="container my-5">
-        <div class="row justify-content-center">
-            <div class="col-md-8 col-lg-6">
-                <div class="card shadow-lg p-4 border-0">
-                    {% for covoiturage in covoiturages %}
-                        <div class="card p-3 mb-3">
-                            <strong>{{ covoiturage.placeDeparture }}</strong>
-                            →
-                            <strong>{{ covoiturage.placeArrival }}</strong>
-                            <div class="text-muted small">
-                                {{ covoiturage.dateDeparture|date('d/m/Y') }}
-                            </div>
-                        </div>
-                    {% else %}
-                        <p class="mb-0">Aucun covoiturage trouvé.</p>
-                    {% endfor %}
-                </div>
-            </div>
-        </div>
-    </div>
-</main>
+							{# FILTRE : DUREE MAX (minutes) #}
+							<div class="mb-3">
+								<label class="form-label fw-semibold">Durée maximum</label>
+								<select class="form-select form-select-sm filters-control" name="maxDuration">
+									<option value="" {{ app.request.query.get('maxDuration') == '' ? 'selected' : '' }}>Aucune</option>
+									<option value="120" {{ app.request.query.get('maxDuration') == '120' ? 'selected' : '' }}>2h</option>
+									<option value="180" {{ app.request.query.get('maxDuration') == '180' ? 'selected' : '' }}>3h</option>
+									<option value="240" {{ app.request.query.get('maxDuration') == '240' ? 'selected' : '' }}>4h</option>
+									<option value="360" {{ app.request.query.get('maxDuration') == '360' ? 'selected' : '' }}>6h</option>
+								</select>
+							</div>
+
+							{# FILTRE : PLACES MIN #}
+							<div class="mb-3">
+								<label class="form-label fw-semibold">Places minimum</label>
+								<select class="form-select form-select-sm filters-control" name="minPlaces">
+									<option value="" {{ app.request.query.get('minPlaces') == '' ? 'selected' : '' }}>Peu importe</option>
+									<option value="1" {{ app.request.query.get('minPlaces') == '1' ? 'selected' : '' }}>1+</option>
+									<option value="2" {{ app.request.query.get('minPlaces') == '2' ? 'selected' : '' }}>2+</option>
+									<option value="3" {{ app.request.query.get('minPlaces') == '3' ? 'selected' : '' }}>3+</option>
+									<option value="4" {{ app.request.query.get('minPlaces') == '4' ? 'selected' : '' }}>4+</option>
+								</select>
+							</div>
+
+							{# ACTIONS #}
+							<div class="d-flex gap-2">
+								<button class="btn btn-ecoride btn-sm flex-grow-1" type="submit">
+									Appliquez
+								</button>
+
+							</div>
+						</form>
+					</div>
+				</div>
+
+				{# COLONNE RESULTATS #}
+				<div class="col-md-12 col-lg-8 col-sm-12 mx-8">
+					<div
+						class="card shadow-lg p-4  d-flex align-items-center">
+
+						{# LISTE DES COVOITURAGES #}
+						{% for covoiturage in covoiturages %}
+							<div
+								class="m-3 p-3 carte-chauffeur">
+
+								{# HEADER CARTE : CHAUFFEUR + INFOS TRAJET #}
+								<div
+									class="border-bottom px-2 pt-2 rounded d-flex flex-wrap  gap-3 align-items-center justify-content-between">
+									{# Bloc chauffeur #}
+									<div class="d-flex flex-wrap align-items-center gap-3">
+										<div class="photo ms-2">
+											<img class="photo-chauffeur" src="{{ asset('assets/images/photo1.png') }}" alt="photo profile utilisateur">
+										</div>
+
+										<div class="text-center pe-2">
+											<h5 class="mb-0">{{ covoiturage.idDriver.pseudo }}</h5>
+											<p class="mb-0">⭐ 5</p>
+										</div>
+									</div>
+
+									{# Bloc infos covoiturage (départ / durée / arrivée) #}
+									<div
+										class="d-flex flex-lg-row flex-md-row  justify-content-center align-items-center gap-4">
+										<!-- Départ -->
+										<div class="d-flex flex-column text-center">
+											<span class="fw-semibold text-nowrap">{{ covoiturage.departureTime|date('H:i') }}</span>
+											<span class="text-muted">{{ covoiturage.placeDeparture }}</span>
+										</div>
+
+										<!-- Durée -->
+										<div class="text-center">
+											<span class="text-nowrap">-----{{ covoiturage.travelTimeFormatted }}-----</span>
+										</div>
+
+										<!-- Arrivée -->
+										<div class="d-flex flex-column text-center">
+											<span class="fw-semibold text-nowrap">{{ covoiturage.arrivalTime|date('H:i') }}</span>
+											<span class="text-muted">{{ covoiturage.placeArrival }}</span>
+										</div>
+									</div>
+
+									<!-- Pix + bouton détails -->
+									<div class="Pix_bouton détails d-flex flex-column text-center">
+										<div class="prix-covoiturage">
+											<h5>{{covoiturage.price}}
+												Crédits</h5>
+										</div>
+										<a class="btn btn-sm px-3 text-center btn-ecoride" href="#">
+											Détails
+										</a>
+									</div>
+								</div>
+
+								{# FOOTER CARTE : DATE / PLACES / ENERGIE #}
+								<div class="p-3 d-flex justify-content-between align-items-center gap-3">
+									<div class="text-center">
+										<span>{{ covoiturage.dateDeparture|date('d/m/y') }}</span>
+									</div>
+
+									<div class="text-center">
+										<span>{{ covoiturage.placesNbr }}</span>
+										places disponible
+									</div>
+
+									<div class="text-center">
+										<span>{{ covoiturage.idVehicule.energy }}</span>
+									</div>
+								</div>
+
+							</div>
+						{% else %}
+							{# AUCUN RESULTAT #}
+							<p class="mb-0">Aucun covoiturage trouvé.</p>
+						{% endfor %}
+
+					</div>
+				</div>
+
+			</div>
+		</div>
+	</main>
 
 {% endblock %}

@@ -12,19 +12,28 @@ use Symfony\Component\Routing\Attribute\Route;
 
 final class CovoiturageListController extends AbstractController
 {
-    #[Route('/covoiturage', name: 'app_covoiturage_list')]
+    #[Route('/covoiturage', name: 'app_covoiturage_list', methods: ['GET'])]
     public function index(Request $request, CovoiturageRepository $repository): Response
     {
-        //creer un formulaire de recherche a partir de CovoiturageSearch
         $search = new CovoiturageSearch();
-        $covoiturageForm = $this->createForm(CovoiturageSearchType::class, $search);
+
+        $covoiturageForm = $this->createForm(CovoiturageSearchType::class, $search, [
+            'method' => 'GET',
+        ]);
         $covoiturageForm->handleRequest($request);
 
-        $covoiturages = $repository->search($search);
+        $filters = [
+            'energy' => $request->query->get('energy'),
+            'maxPrice' => $request->query->get('maxPrice'),
+            'maxDuration' => $request->query->get('maxDuration'),
+            'minPlaces' => $request->query->get('minPlaces'),
+        ];
+        $covoiturages = $repository->search($search, $filters);
 
         return $this->render('covoiturage_list/index.html.twig', [
             'covoiturageForm' => $covoiturageForm->createView(),
-            'covoiturages' => $covoiturages
+            'covoiturages' => $covoiturages,
         ]);
     }
 }
+

@@ -7,9 +7,6 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use App\Model\CovoiturageSearch;
 
-/**
- * @extends ServiceEntityRepository<Covoiturage>
- */
 class CovoiturageRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
@@ -17,27 +14,58 @@ class CovoiturageRepository extends ServiceEntityRepository
         parent::__construct($registry, Covoiturage::class);
     }
 
-
-    public function search(CovoiturageSearch $search): array
+    public function search(CovoiturageSearch $search, array $filters = []): array
     {
-        $qb = $this->createQueryBuilder('c');
+        $qb = $this->createQueryBuilder('c')
+            ->leftJoin('c.idVehicule', 'v')
+            ->addSelect('v');
 
-        if ($search->placeDeparture) {
-            $qb->andWhere('c.placeDeparture LIKE :departure')
-            ->setParameter('departure', '%'.$search->placeDeparture.'%');
+        $departure = trim((string) $search->getPlaceDeparture());
+        $arrival   = trim((string) $search->getPlaceArrival());
+
+        if ($departure !== '') {
+            $qb->andWhere('LOWER(c.placeDeparture) LIKE :departure')
+               ->setParameter('departure', '%'.mb_strtolower($departure).'%');
         }
 
-        if ($search->placeArrival) {
-            $qb->andWhere('c.placeArrival LIKE :arrival')
-            ->setParameter('arrival', '%'.$search->placeArrival.'%');
+        if ($arrival !== '') {
+            $qb->andWhere('LOWER(c.placeArrival) LIKE :arrival')
+               ->setParameter('arrival', '%'.mb_strtolower($arrival).'%');
         }
 
-        if ($search->dateDeparture) {
-            $qb->andWhere('c.dateDeparture = :date')
-            ->setParameter('date', $search->dateDeparture);
+        if ($search->getDateDeparture()) {
+            $date = \DateTimeImmutable::createFromInterface($search->getDateDeparture());
+            $start = $date->setTime(0, 0, 0);
+            $end   = $start->modify('+1 day');
+
+            $qb->andWhere('c.dateDeparture >= :start')
+               ->andWhere('c.dateDeparture < :end')
+               ->setParameter('start', $start)
+               ->setParameter('end', $end);
         }
 
-        return $qb->getQuery()->getResult();
+        if (!empty($filters['energy'])) {
+            $qb->andWhere('v.energy = :energy')
+               ->setParameter('energy', $filters['energy']);
+        }
+
+        if (!empty($filters['maxPrice'])) {
+            $qb->andWhere('c.price <= :maxPrice')
+               ->setParameter('maxPrice', (int) $filters['maxPrice']);
+        }
+
+        if (!empty($filters['maxDuration'])) {
+            $qb->andWhere('c.travelTime <= :maxDuration')
+               ->setParameter('maxDuration', (int) $filters['maxDuration']);
+        }
+
+        if (!empty($filters['minPlaces'])) {
+            $qb->andWhere('c.placesNbr >= :minPlaces')
+               ->setParameter('minPlaces', (int) $filters['minPlaces']);
+        }
+
+        return $qb->orderBy('c.dateDeparture', 'ASC')
+                  ->getQuery()
+                  ->getResult();
     }
-
 }
