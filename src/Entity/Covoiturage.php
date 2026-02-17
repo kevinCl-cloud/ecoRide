@@ -58,6 +58,9 @@ class Covoiturage
     #[ORM\OneToMany(targetEntity: Reservation::class, mappedBy: 'idCovoiturage', orphanRemoval: true)]
     private Collection $reservations;
 
+    #[ORM\Column(type: Types::DATE_MUTABLE)]
+    private ?\DateTime $dateDeparture = null;
+
     public function __construct()
     {
         $this->reservations = new ArrayCollection();
@@ -227,6 +230,18 @@ class Covoiturage
                 $reservation->setIdCovoiturage(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getDateDeparture(): ?\DateTime
+    {
+        return $this->dateDeparture;
+    }
+
+    public function setDateDeparture(\DateTime $dateDeparture): static
+    {
+        $this->dateDeparture = $dateDeparture;
 
         return $this;
     }

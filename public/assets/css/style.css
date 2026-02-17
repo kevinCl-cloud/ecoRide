@@ -62,6 +62,7 @@ body {
   display: flex;
   align-items: center;
   position: relative;
+  padding-bottom: 80px;
 }
 
 .hero-others-pages {
@@ -74,6 +75,7 @@ body {
   display: flex;
   align-items: center;
   position: relative;
+  padding-bottom: 80px;
 }
 
 .hero-slogan {
@@ -96,6 +98,9 @@ body {
 .btn-ecoride {
     color: var(--ecoride-soft);
     background-color: var(--ecoride-green-dark);
+    border-radius: 999px;
+    padding: 10px 18px;
+    font-weight: 600;
 }
 
 .presentation {
@@ -176,4 +181,50 @@ body {
 .carte-vehicule {
     border: solid;
     border-color: var(--ecoride-green-dark);
+}
+
+.search-bar-inner{
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;      
+  border-radius: 999px;
+  background: #fff;
+  border: 1px solid rgba(0,0,0,0.08);
+  max-width: 850px;      
+}
+
+.search-field{
+  flex: 1;
+}
+
+.search-date{
+  flex: 0 0 150px;        
+}
+
+.search-field input{
+  border: none !important;
+  box-shadow: none !important;
+  background: transparent !important;
+  padding: 6px 10px;      
+  font-size: 14px;        
+}
+
+.search-btn{
+  border-radius: 999px;
+  padding: 6px 14px;      
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.search-bar-wrapper{
+    position: relative;
+    margin-top: -40px; 
+    z-index: 10;
+}
+
+/* donne un effet flottant */
+.search-bar-inner{
+    background: white;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.08);
 }

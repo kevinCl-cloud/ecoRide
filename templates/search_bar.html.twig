@@ -1,0 +1,33 @@
+    <div class="container my-4">
+        <div class="row justify-content-center">
+            <div class="col-12 col-lg-10">
+
+                {{ form_start(covoiturageForm) }}
+
+               <div class="search-bar-inner shadow-sm d-flex mx-auto">
+                    <div class="search-field">
+                        {{ form_widget(covoiturageForm.placeDeparture) }}
+                    </div>
+
+                    <div class="search-sep"></div>
+
+                    <div class="search-field">
+                        {{ form_widget(covoiturageForm.placeArrival) }}
+                    </div>
+
+                    <div class="search-sep"></div>
+
+                    <div class="search-field search-date">
+                        {{ form_widget(covoiturageForm.dateDeparture) }}
+                    </div>
+
+                    <button type="submit" class="btn btn-ecoride search-btn">
+                        Recherchez
+                    </button>
+                </div>
+
+                {{ form_end(covoiturageForm) }}
+
+            </div>
+        </div>
+    </div>

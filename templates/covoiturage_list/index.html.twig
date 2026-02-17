@@ -1,0 +1,39 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+<main class="flex-fill">
+    <section class="hero-others-pages">
+        <div class="hero-inner container">
+            <h3 class="display-6 fw-bold mb-2 hero-slogan">Voyagez Ecoresponsable</h3>
+            <p class="mb-3 hero-slogan">Partagez vos trajets, Economisez et protégez la planète</p>
+        </div>
+    </section>
+
+    {% include 'search_bar.html.twig' %}
+
+
+    {# RESULTATS #}
+    <div class="container my-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8 col-lg-6">
+                <div class="card shadow-lg p-4 border-0">
+                    {% for covoiturage in covoiturages %}
+                        <div class="card p-3 mb-3">
+                            <strong>{{ covoiturage.placeDeparture }}</strong>
+                            →
+                            <strong>{{ covoiturage.placeArrival }}</strong>
+                            <div class="text-muted small">
+                                {{ covoiturage.dateDeparture|date('d/m/Y') }}
+                            </div>
+                        </div>
+                    {% else %}
+                        <p class="mb-0">Aucun covoiturage trouvé.</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+{% endblock %}

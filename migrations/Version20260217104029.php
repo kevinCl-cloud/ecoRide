@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20260216111927 extends AbstractMigration
+final class Version20260217104029 extends AbstractMigration
 {
     public function getDescription(): string
     {
@@ -21,7 +21,7 @@ final class Version20260216111927 extends AbstractMigration
     {
         // this up() migration is auto-generated, please modify it to your needs
         $this->addSql('CREATE TABLE brand (id INT AUTO_INCREMENT NOT NULL, libel VARCHAR(50) NOT NULL, PRIMARY KEY (id)) DEFAULT CHARACTER SET utf8mb4');
-        $this->addSql('CREATE TABLE covoiturage (id INT AUTO_INCREMENT NOT NULL, price INT NOT NULL, places_nbr SMALLINT NOT NULL, travel_time INT NOT NULL, departure_time TIME NOT NULL, arrival_time TIME NOT NULL, place_departure VARCHAR(100) NOT NULL, place_arrival VARCHAR(100) NOT NULL, statut VARCHAR(255) NOT NULL, create_at DATETIME NOT NULL, id_driver_id INT NOT NULL, id_vehicule_id INT NOT NULL, INDEX IDX_28C79E894377852E (id_driver_id), INDEX IDX_28C79E895258F8E6 (id_vehicule_id), PRIMARY KEY (id)) DEFAULT CHARACTER SET utf8mb4');
+        $this->addSql('CREATE TABLE covoiturage (id INT AUTO_INCREMENT NOT NULL, price INT NOT NULL, places_nbr SMALLINT NOT NULL, travel_time INT NOT NULL, departure_time TIME NOT NULL, arrival_time TIME NOT NULL, place_departure VARCHAR(100) NOT NULL, place_arrival VARCHAR(100) NOT NULL, statut VARCHAR(255) NOT NULL, create_at DATETIME NOT NULL, date_departure DATE NOT NULL, id_driver_id INT NOT NULL, id_vehicule_id INT NOT NULL, INDEX IDX_28C79E894377852E (id_driver_id), INDEX IDX_28C79E895258F8E6 (id_vehicule_id), PRIMARY KEY (id)) DEFAULT CHARACTER SET utf8mb4');
         $this->addSql('CREATE TABLE credit_transaction (id INT AUTO_INCREMENT NOT NULL, amount INT NOT NULL, transaction_type VARCHAR(255) NOT NULL, transaction_reason VARCHAR(255) NOT NULL, created_at DATETIME NOT NULL, id_user_id INT NOT NULL, id_reservation_id INT NOT NULL, INDEX IDX_5E1DE3E179F37AE5 (id_user_id), INDEX IDX_5E1DE3E185542AE1 (id_reservation_id), PRIMARY KEY (id)) DEFAULT CHARACTER SET utf8mb4');
         $this->addSql('CREATE TABLE notice (id INT AUTO_INCREMENT NOT NULL, rating SMALLINT NOT NULL, comment_notice LONGTEXT NOT NULL, status VARCHAR(255) NOT NULL, created_at DATETIME NOT NULL, id_reservation_id INT NOT NULL, INDEX IDX_480D45C285542AE1 (id_reservation_id), PRIMARY KEY (id)) DEFAULT CHARACTER SET utf8mb4');
         $this->addSql('CREATE TABLE reservation (id INT AUTO_INCREMENT NOT NULL, status VARCHAR(255) NOT NULL, created_at DATETIME NOT NULL, id_user_id INT NOT NULL, id_covoiturage_id INT NOT NULL, INDEX IDX_42C8495579F37AE5 (id_user_id), INDEX IDX_42C849555F01A896 (id_covoiturage_id), PRIMARY KEY (id)) DEFAULT CHARACTER SET utf8mb4');

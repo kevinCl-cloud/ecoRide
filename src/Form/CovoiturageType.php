@@ -9,6 +9,7 @@ use Symfony\Component\Form\Exception\TransformationFailedException;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\TimeType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -21,14 +22,20 @@ class CovoiturageType extends AbstractType
             ->add('price', IntegerType::class, [
                 'label' => 'Prix', 
                 'attr' => [
-                    'min' => 0
+                    'min' => 0,
+                    'placeholder' => 'Indiquez le prix de votre trajet'
                 ]
             ])
             ->add('placesNbr', IntegerType::class, [
                 'label'=> 'Places disponible',
                 'attr' => [
-                    'min' => 0
+                    'min' => 0,
+                    'placeholder' => 'Indiquez le nombre de place disponible'
                 ]
+            ])
+            ->add('dateDeparture', DateType::class, [
+                'label' => 'Date de départ',
+                
             ])
             ->add('travelTime', TextType::class, [
                 'label' => 'Temps de Trajet',

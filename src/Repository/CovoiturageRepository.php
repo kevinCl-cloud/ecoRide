@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\Covoiturage;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use App\Model\CovoiturageSearch;
 
 /**
  * @extends ServiceEntityRepository<Covoiturage>
@@ -16,28 +17,27 @@ class CovoiturageRepository extends ServiceEntityRepository
         parent::__construct($registry, Covoiturage::class);
     }
 
-//    /**
-//     * @return Covoiturage[] Returns an array of Covoiturage objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('c')
-//            ->andWhere('c.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('c.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
 
-//    public function findOneBySomeField($value): ?Covoiturage
-//    {
-//        return $this->createQueryBuilder('c')
-//            ->andWhere('c.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+    public function search(CovoiturageSearch $search): array
+    {
+        $qb = $this->createQueryBuilder('c');
+
+        if ($search->placeDeparture) {
+            $qb->andWhere('c.placeDeparture LIKE :departure')
+            ->setParameter('departure', '%'.$search->placeDeparture.'%');
+        }
+
+        if ($search->placeArrival) {
+            $qb->andWhere('c.placeArrival LIKE :arrival')
+            ->setParameter('arrival', '%'.$search->placeArrival.'%');
+        }
+
+        if ($search->dateDeparture) {
+            $qb->andWhere('c.dateDeparture = :date')
+            ->setParameter('date', $search->dateDeparture);
+        }
+
+        return $qb->getQuery()->getResult();
+    }
+
 }
