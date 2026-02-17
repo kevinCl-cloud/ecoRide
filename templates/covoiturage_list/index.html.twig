@@ -94,7 +94,7 @@
 				<div class="col-md-12 col-lg-8 col-sm-12 mx-8">
 					<div
 						class="card shadow-lg p-4  d-flex align-items-center">
-
+						{% if covoiturages is not empty %}
 						{# LISTE DES COVOITURAGES #}
 						{% for covoiturage in covoiturages %}
 							<div
@@ -142,7 +142,7 @@
 											<h5>{{covoiturage.price}}
 												Crédits</h5>
 										</div>
-										<a class="btn btn-sm px-3 text-center btn-ecoride" href="#">
+										<a class="btn btn-sm px-3 text-center btn-ecoride" href="{{ path('app_detail_covoiturage', { id: covoiturage.id }) }}">
 											Détails
 										</a>
 									</div>
@@ -165,10 +165,13 @@
 								</div>
 
 							</div>
-						{% else %}
+						{% endfor %}
+						{% elseif app.request.query.all is not empty %}
 							{# AUCUN RESULTAT #}
 							<p class="mb-0">Aucun covoiturage trouvé.</p>
-						{% endfor %}
+						{% else %}
+							<p class="mb-0">Veuillez effectuer une recherche pour afficher des covoiturages.</p>
+						{% endif %}
 
 					</div>
 				</div>

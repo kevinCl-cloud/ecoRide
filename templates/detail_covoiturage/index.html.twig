@@ -1,0 +1,251 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+	<main class="flex-fill">
+		{# HERO #}
+		<section class="hero-others-pages">
+			<div class="hero-inner container">
+				<h3 class="display-6 fw-bold mb-2 hero-slogan">Voyagez Ecoresponsable</h3>
+				<p class="mb-3 hero-slogan">Partagez vos trajets, Economisez et protégez la planète</p>
+			</div>
+		</section>
+
+		{# CONTENU PAGE #}
+		<div class="container my-5">
+			<div class="row justify-content-center">
+
+				{# TITRE #}
+				<div class="col-12 col-lg-7 px-4">
+					<h3>Détail du trajet</h3>
+				</div>
+
+				{# BLOC HAUT : CARTE + PRIX (COTE A COTE) #}
+				<div class="col-12 col-lg-7">
+					<div class="row g-3 align-items-stretch">
+
+						{# CARTE CHAUFFEUR DETAIL #}
+						<div class="col-12 col-md-9 d-flex">
+							<div class="p-3 carte-chauffeur-detail w-100 h-100">
+
+								{# HEADER CARTE : CHAUFFEUR + INFOS TRAJET #}
+								<div class="border-bottom px-2 pt-2 rounded d-flex flex-wrap justify-content-between gap-3 align-items-center">
+									{# Bloc chauffeur #}
+									<div class="d-flex flex-wrap align-items-center justify-content-center gap-3">
+										<div class="photo ms-2 p-2">
+											<img class="photo-chauffeur" src="{{ asset('assets/images/photo1.png') }}" alt="photo profile utilisateur">
+										</div>
+
+										<div class="text-center pe-2">
+											<h5 class="mb-0">{{ covoiturage.idDriver.pseudo }}</h5>
+											<p class="mb-0">⭐ 5</p>
+										</div>
+									</div>
+
+									{# Bloc infos covoiturage (départ / durée / arrivée) #}
+									<div class="d-flex flex-lg-row flex-md-row justify-content-center align-items-center gap-4">
+										<div class="d-flex flex-column text-center">
+											<span class="fw-semibold text-nowrap">{{ covoiturage.departureTime|date('H:i') }}</span>
+											<span class="text-muted">{{ covoiturage.placeDeparture }}</span>
+										</div>
+
+										<div class="text-center">
+											<span class="text-nowrap">-----{{ covoiturage.travelTimeFormatted }}-----</span>
+										</div>
+
+										<div class="d-flex flex-column text-center">
+											<span class="fw-semibold text-nowrap">{{ covoiturage.arrivalTime|date('H:i') }}</span>
+											<span class="text-muted">{{ covoiturage.placeArrival }}</span>
+										</div>
+									</div>
+								</div>
+
+								{# FOOTER CARTE : DATE / PLACES / ENERGIE #}
+								<div class="p-3 d-flex justify-content-center align-items-center gap-3">
+									<div class="text-center">
+										<span>{{ covoiturage.dateDeparture|date('d/m/y') }}</span>
+									</div>
+
+									<div class="text-center">
+										<span>{{ covoiturage.placesNbr }}</span>
+										places disponible
+									</div>
+
+									<div class="text-center">
+										<span>{{ covoiturage.idVehicule.energy }}</span>
+									</div>
+								</div>
+
+							</div>
+						</div>
+
+						{# PRIX + BOUTON #}
+						<div class="col-12 col-md-3 d-flex">
+							<div class="w-100 h-100 d-flex flex-column justify-content-center align-items-center text-center p-3 rounded">
+
+								{# --- VARIABLES / CONDITIONS --- #}
+								{% set isLogged = app.user is not null %}
+								{% set userCredits = isLogged ? (app.user.credits ?? 0) : 0 %}
+								{% set placesOk = (covoiturage.placesNbr ?? 0) > 0 %}
+								{% set creditsOk = isLogged ? (userCredits >= (covoiturage.price ?? 0)) : false %}
+								{% set isDriverOfRide = isLogged and (app.user.id == covoiturage.idDriver.id) %}
+								{% set canParticipate = isLogged and placesOk and creditsOk and (not isDriverOfRide) %}
+
+								<div class="prix-covoiturage mb-2">
+									<h5 class="mb-0">{{ covoiturage.price }} Crédits</h5>
+								</div>
+
+								{# 1) Pas connecté -> login #}
+								{% if not isLogged %}
+									<a class="btn btn-sm px-3 btn-ecoride"
+									   href="{{ path('app_login') }}">
+										Se connecter
+									</a>
+									<small class="text-muted mt-2">Connectez-vous pour participer</small>
+
+								{# 2) Chauffeur -> interdit #}
+								{% elseif isDriverOfRide %}
+									<button class="btn btn-sm px-3 btn-ecoride" disabled>
+										Vous êtes le chauffeur
+									</button>
+
+								{# 3) Plus de place #}
+								{% elseif not placesOk %}
+									<button class="btn btn-sm px-3 btn-ecoride" disabled>
+										Trajet complet
+									</button>
+									<small class="text-muted mt-2">Plus aucune place disponible</small>
+
+								{# 4) Crédits insuffisants #}
+								{% elseif not creditsOk %}
+									<button class="btn btn-sm px-3 btn-ecoride" disabled>
+										Crédits insuffisants
+									</button>
+									<small class="text-muted mt-2">Solde : {{ userCredits }} crédits</small>
+
+								{# 5) OK -> double confirmation (modal + POST) #}
+								{% else %}
+									<button type="button"
+											class="btn btn-sm px-3 btn-ecoride"
+											data-bs-toggle="modal"
+											data-bs-target="#confirmParticiperModal">
+										Participer
+									</button>
+
+									<div class="modal fade" id="confirmParticiperModal" tabindex="-1" aria-hidden="true">
+										<div class="modal-dialog modal-dialog-centered">
+											<div class="modal-content">
+												<div class="modal-header">
+													<h5 class="modal-title">Confirmer la participation</h5>
+													<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+												</div>
+
+												<div class="modal-body">
+													<p class="mb-2">
+														Ce trajet coûte <strong>{{ covoiturage.price }} crédits</strong>.
+													</p>
+													<p class="mb-0 text-muted">
+														Votre solde actuel : {{ userCredits }} crédits.
+													</p>
+												</div>
+
+												<div class="modal-footer">
+													<button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal">
+														Annuler
+													</button>
+                                                    <!-- creer le controller reservation -->
+													<form method="post" action="#">
+														<input type="hidden" name="_token" value="{{ csrf_token('participer' ~ covoiturage.id) }}">
+														<button type="submit" class="btn btn-sm btn-ecoride">
+															Confirmer
+														</button>
+													</form>
+												</div>
+											</div>
+										</div>
+									</div>
+								{% endif %}
+
+							</div>
+						</div>
+
+					</div>
+
+					{# BLOC BAS : PREFERENCES + AVIS (COTE A COTE) #}
+					<div class="row mt-4 gx-4">
+
+						{# COLONNE Préférences #}
+						<div class="col-12 col-lg-6 preference">
+							<div class="d-flex align-items-center gap-3">
+								<div class="photo ms-2 p-2">
+									<img class="photo-chauffeur" src="{{ asset('assets/images/photo1.png') }}" alt="photo profile utilisateur">
+								</div>
+
+								<div class="text-center pe-2">
+									<h5 class="mb-1">{{ covoiturage.idDriver.pseudo }}</h5>
+									<p class="mb-0">⭐ 5</p>
+								</div>
+							</div>
+
+							{# Informations Voiture #}
+							<div class="px-3 d-flex flex-column mt-3">
+								<h5>Informations Voiture</h5>
+
+								{% for vehicule in covoiturage.idDriver.vehicules %}
+									<span class="mb-1">Marque : {{ vehicule.idBrand.libel }}</span>
+									<span class="mb-1">Modèle : {{ vehicule.model }}</span>
+									<span class="mb-1">Energie : {{ vehicule.energy }}</span>
+								{% else %}
+									<span class="mb-1">Aucun véhicule renseigné.</span>
+								{% endfor %}
+							</div>
+
+							{# PREFERENCES DU CONDUCTEUR #}
+							<div class="p-3 d-flex flex-column">
+								<h5>Préférences du conducteur</h5>
+
+								<span class="mb-1">
+									{% if covoiturage.idDriver.smokingAllowed %}
+										Cigarette acceptée
+									{% else %}
+										Pas de cigarette
+									{% endif %}
+								</span>
+
+								<span class="mb-1">
+									{% if covoiturage.idDriver.petsAllowed %}
+										Animaux acceptés
+									{% else %}
+										Pas d'animaux
+									{% endif %}
+								</span>
+							</div>
+						</div>
+
+						{# COLONNE Avis #}
+						<div class="col-12 col-lg-6 avis">
+							<div class="p-3 rounded h-100">
+								<h5 class="mb-3">Avis</h5>
+
+								<div class="d-flex align-items-center gap-3 border-bottom pb-3 mb-3">
+									<div class="photo ms-2 p-2">
+										<img class="photo-chauffeur" src="{{ asset('assets/images/photo1.png') }}" alt="photo profile utilisateur">
+									</div>
+									<div class="text-center pe-2">
+										<h6 class="mb-0">Passager</h6>
+										<p class="mb-0">⭐ 5</p>
+									</div>
+								</div>
+
+								<p class="mb-0 text-muted">Aucun avis pour le moment.</p>
+							</div>
+						</div>
+
+					</div>
+				</div>
+
+			</div>
+		</div>
+	</main>
+
+{% endblock %}

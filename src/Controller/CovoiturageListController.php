@@ -20,15 +20,21 @@ final class CovoiturageListController extends AbstractController
         $covoiturageForm = $this->createForm(CovoiturageSearchType::class, $search, [
             'method' => 'GET',
         ]);
+        
         $covoiturageForm->handleRequest($request);
-
+        $covoiturages = [];
         $filters = [
             'energy' => $request->query->get('energy'),
             'maxPrice' => $request->query->get('maxPrice'),
             'maxDuration' => $request->query->get('maxDuration'),
             'minPlaces' => $request->query->get('minPlaces'),
         ];
-        $covoiturages = $repository->search($search, $filters);
+
+        if($covoiturageForm->isSubmitted() && $covoiturageForm->isValid()){
+            $covoiturages = $repository->search($search, $filters);
+        }
+
+
 
         return $this->render('covoiturage_list/index.html.twig', [
             'covoiturageForm' => $covoiturageForm->createView(),

@@ -182,6 +182,14 @@ body {
   overflow: hidden;
 }
 
+.carte-chauffeur-detail {
+  border: solid;
+  border-color: var(--ecoride-green-dark);
+  border-radius: 50px;
+    width: 100%;
+  overflow: hidden;
+}
+
 .carte-chauffeur * {
   min-width: 0;
   word-break: break-word;
@@ -241,4 +249,15 @@ body {
     border-radius: 25px;
     border-color: var(--ecoride-green);
     height: 440px;
+}
+
+.preference {
+    border: solid;
+    border-radius: 25px;
+    border-color: var(--ecoride-green);
+    height: auto;
+}
+
+.avis {
+  height: auto;
 }
