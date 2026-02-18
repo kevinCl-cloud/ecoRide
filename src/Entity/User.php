@@ -236,8 +236,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function getRoles(): array
     {
-        // si tu as Role en entité, retourne au moins ROLE_USER
-        return ['ROLE_USER'];
+        
+        $roles = ['ROLE_USER'];
+
+        if ($this->role && $this->role->getLibel()) {
+            $roles[] = 'ROLE_' . strtoupper($this->role->getLibel());
+        }
+
+        return array_unique($roles);
     }
 
     public function eraseCredentials(): void

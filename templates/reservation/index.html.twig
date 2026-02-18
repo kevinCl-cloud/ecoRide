@@ -17,18 +17,16 @@
 		<div class="container my-5">
 
 			<div class="text-center my-4">
-				<h2 class="titre-page">Espace personnel</h2>
+				<h2 class="titre-page">Reservations</h2>
 				<p>
-					Bienvenue sur votre espace personnel,
+					Bienvenue sur votre historique de reservation,
 					<span class="eco fw-bold text-capitalize">{{ app.user.firstName }}</span>
 					!
 				</p>
 			</div>
 
 			<div class="col-md-12 col-lg-8 col-sm-12 mx-auto">
-
 				<div class="card shadow-lg p-4">
-
 					<h4 class="mb-4">Mes réservations</h4>
 
 					{% if reservations is empty %}
@@ -40,7 +38,7 @@
 						{% for reservation in reservations %}
 							{% set covoiturage = reservation.idCovoiturage %}
 
-							<div class="border rounded p-3 mb-3">
+							<div class="p-4 mb-3 carte-chauffeur">
 
 								<div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
 
@@ -62,8 +60,16 @@
 									</div>
 
 									<div>
-										{% if covoiturage.dateDeparture > "now"|date %}
+										{% if covoiturage.dateDeparture == 'now' %}
+											<span class="btn btn-ecoride">Commencer le covoiturage</span>
+										{% elseif covoiturage.dateDeparture > "now"|date %}
 											<span class="badge bg-success">À venir</span>
+											<form method="post" action="{{ path('app_reservation_annuler', {id: reservation.id} ) }}" class="mt-2 text-end" onsubmit="return confirm('Confirmer l\'annulation ?');">
+												<input type="hidden" name="_token" value="{{ csrf_token('cancel' ~ reservation.id) }}">
+												<button class="btn-ecoride-reservation">
+													Annuler
+												</button>
+											</form>
 										{% else %}
 											<span class="badge bg-secondary">Terminé</span>
 										{% endif %}

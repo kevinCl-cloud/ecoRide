@@ -12,7 +12,7 @@ use Symfony\Component\Routing\Attribute\Route;
 
 final class CovoiturageListController extends AbstractController
 {
-    #[Route('/covoiturage', name: 'app_covoiturage_list', methods: ['GET'])]
+    #[Route('/covoiturage_list', name: 'app_covoiturage_list', methods: ['GET'])]
     public function index(Request $request, CovoiturageRepository $repository): Response
     {
         $search = new CovoiturageSearch();

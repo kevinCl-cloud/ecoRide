@@ -25,7 +25,7 @@
 				</p>
 			</div>
 			<div class="row justify-content-center">
-				<div class="col-md-12 col-lg-6">
+				<div class="col-md-12 col-lg-7">
 					<div
 						class="card shadow-lg p-3 border-0">
 						<!-- photo + pseudo utilisateur -->
@@ -38,6 +38,9 @@
 								<h4>
 									{{ app.user.pseudo}}
 								</h4>
+								<p>{{ app.user.credits }}
+									crédits
+								</p>
 							</div>
 						</div>
 						<!-- lien modifier les informations -->
@@ -130,137 +133,224 @@
 					{% endif %}
 				</div>
 
-				<div
-					class="card my-3 shadow-lg p-3 border-0">
-					<!-- Affichage des covoiturages -->
-					<div class="gap-3 my-3 d-flex align-items-center justify-content-between">
-						<div class="p-3">
-							<h6>
-								Mes Reservations
-							</h6>
+				<div class="col-md-12 col-lg-12 col-sm-12 mt-3 mx-auto">
+					<div class="card shadow-lg p-4">
+						<div class="d-flex justify-content-between">
+							<h4 class="mb-4">Mes réservations</h4>
+							<a href="{{ path('app_reservation') }}" class="lien px-2">
+								Voir toutes mes reservations
+							</a>
 						</div>
-						<a href="{{ path('app_reservation') }}" class="lien px-2">
-							Voir toutes mes reservations
+						{% if reservations is empty %}
+							<div class="text-center text-muted">
+								Vous n'avez encore aucune réservation.
+							</div>
+						{% else %}
+
+							{% for reservation in reservations %}
+								{% set covoiturage = reservation.idCovoiturage %}
+
+								<div class=" p-4 mb-3 carte-chauffeur">
+
+									<div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+
+										<div>
+											<strong>{{ covoiturage.placeDeparture }}</strong>
+											→
+											<strong>{{ covoiturage.placeArrival }}</strong>
+											<br>
+											<small class="text-muted">
+												{{ covoiturage.dateDeparture|date('d/m/Y') }}
+												à
+												{{ covoiturage.departureTime|date('H:i') }}
+											</small>
+										</div>
+
+										<div class="text-center">
+											<span class="fw-bold">{{ covoiturage.price }}
+												crédits</span>
+										</div>
+
+										<div>
+											{% if covoiturage.dateDeparture == 'now' %}
+
+												<span class="btn btn-ecoride">Commencer le covoiturage</span>
+
+											{% elseif covoiturage.dateDeparture > "now"|date %}
+
+												<span class="badge p-1 bg-success">À venir</span>
+												<form method="post" action="{{ path('app_reservation_annuler', {id: reservation.id} ) }}" class="mt-2 text-end" onsubmit="return confirm('Confirmer l\'annulation ?');">
+													<input type="hidden" name="_token" value="{{ csrf_token('cancel' ~ reservation.id) }}">
+													<button class="btn-ecoride-reservation">
+														Annuler
+													</button>
+												</form>
+
+											{% else %}
+												<span class="badge bg-success">Terminé</span>
+											{% endif %}
+										</div>
+
+									</div>
+
+								</div>
+
+							{% endfor %}
+
+						{% endif %}
+
+					</div>
+
+				</div>
+			</div>
+
+			<div class="col-md-12 col-lg-7 col-sm-12 mx-auto mt-3">
+				<div class="card shadow-lg p-4">
+					<div class="d-flex justify-content-between">
+						<h4 class="mb-4">Mes covoiturages (chauffeur)</h4>
+						<a href="{{ path('app_covoiturage') }}" class="lien px-2">
+							Voir toutes covoiturages
 						</a>
 					</div>
-					<!-- liste des reservations -->
-					<div class="gap-3  carte-chauffeur">
-						<div class=" border-bottom px-3 pt-2 rounded d-flex gap-3 align-items-center justify-content-between">
-							<div class=" mh-50 d-flex align-items-center gap-3">
-								<div class="photo ms-2">
-									<img class="photo-chauffeur" src="{{ asset("assets/images/photo1.png") }}" alt="photo profile utilisateur"></img>
-							</div>
-							<div class="text-center">
-								<h5>
-									{{ app.user.name}}
-								</h5>
-								<p>⭐ 5
-								</p>
-							</div>
+					{# SECTION CHAUFFEUR  #}
+					{% if userCovoituragesDriver is empty %}
+						<div class="text-center text-muted mb-4">
+							Vous n'avez encore créé aucun covoiturage.
 						</div>
+					{% else %}
+						{% for covoiturage in userCovoituragesDriver %}
 
-						<!-- Affichage infos covoiturage -->
-						<div
-							class="col-md-6 d-flex justify-content-center align-items-center gap-1">
-							<!-- Départ -->
-							<div class="d-flex flex-column text-center">
-								<span class="fw-semibold">10:00</span>
-								<span class="text-muted">Paris</span>
-							</div>
-							<!-- Durée -->
-							<div class="text-center">
-								<span>----- 6H -----</span>
-							</div>
-							<!-- Arrivée -->
-							<div class="d-flex flex-column text-center">
-								<span class="fw-semibold">16:00</span>
-								<span class="text-muted">Marseille</span>
+							<div class="p-4 mb-3 carte-chauffeur">
+								<div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+
+									<div>
+										<strong>{{ covoiturage.placeDeparture }}</strong>
+										→
+										<strong>{{ covoiturage.placeArrival }}</strong><br>
+										<small class="text-muted">
+											{{ covoiturage.dateDeparture|date('d/m/Y') }}
+											à
+											{{ covoiturage.departureTime|date('H:i') }}
+										</small>
+									</div>
+
+									<div class="text-center">
+										<span class="fw-bold">{{ covoiturage.price }}
+											crédits</span><br>
+										<small class="text-muted">{{ covoiturage.placesNbr }}
+											place(s)</small>
+									</div>
+
+									<div class="d-flex flex-column gap-2 align-items-end">
+
+										{% if covoiturage.statut.value == 'PREVU' %}
+
+											<form method="post" action="{{ path('app_covoiturage_start', { id: covoiturage.id }) }}" class="w-100">
+												<input type="hidden" name="_token" value="{{ csrf_token('start_covoiturage' ~ covoiturage.id) }}">
+												<button type="submit" class="btn btn-ecoride-reservation w-100">
+													Commencer
+												</button>
+											</form>
+
+											<form method="post" action="{{ path('app_covoiturage_cancel', {id:covoiturage.id}) }}" class="w-100">
+												<input type="hidden" name="_token" value="{{ csrf_token('cancel_covoiturage' ~ covoiturage.id) }}">
+												<button type="submit" class="btn btn-ecoride-annuler w-100">
+													Annuler
+												</button>
+											</form>
+
+										{% elseif covoiturage.statut.value == 'EN_COURS' %}
+
+											<form method="post" action="#" class="w-100">
+												<input type="hidden" name="_token" value="{{ csrf_token('finish_covoiturage' ~ covoiturage.id) }}">
+												<button type="submit" class="btn btn-ecoride-reservation w-100">
+													Terminer
+												</button>
+											</form>
+
+										{% elseif covoiturage.statut.value in ['TERMINE', 'ANNULE'] %}
+
+											<form method="post" action="{{ path('app_covoiturage_delete', {id:covoiturage.id}) }}" class="w-100">
+												<input type="hidden" name="_token" value="{{ csrf_token('delete_covoiturage' ~ covoiturage.id) }}">
+												<button type="submit" class="btn btn-ecoride-reservation w-100">
+													Supprimer
+												</button>
+											</form>
+
+										{% endif %}
+
+									</div>
+
+								</div>
 							</div>
 
-						</div>
+						{% endfor %}
+					{% endif %}
+
+					<hr
+					class="my-4">
+
+					{#  SECTION PASSAGER   #}
+					<div class="d-flex justify-content-between">
+						<h4 class="mb-4">Mes covoiturages (chauffeur)</h4>
+						<a href="{{ path('app_covoiturage') }}" class="lien px-2">
+							Voir toutes covoiturages
+						</a>
 					</div>
 
-					<!-- Affichage infos reservations-->
-					<div class="p-3 d-flex justify-content-between">
-						<div class="text-center">
-							<span>lundi 23 juillet</span>
+					{% if userCovoituragesPassenger is empty %}
+						<div class="text-center text-muted">
+							Vous ne participez à aucun covoiturage pour le moment.
 						</div>
-						<div class="text-center">
-							<span>places disponible</span>
-						</div>
-						<div class="text-center">
-							<span>voyage écologique</span>
-						</div>
-					</div>
+					{% else %}
+						{% for covoiturage in userCovoituragesPassenger %}
+
+							<div class="p-4 mb-3 carte-chauffeur">
+								<div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+
+									<div>
+										<strong>{{ covoiturage.placeDeparture }}</strong>
+										→
+										<strong>{{ covoiturage.placeArrival }}</strong><br>
+										<small class="text-muted">
+											{{ covoiturage.dateDeparture|date('d/m/Y') }}
+											à
+											{{ covoiturage.departureTime|date('H:i') }}
+										</small>
+									</div>
+
+									<div class="text-center">
+										<span class="fw-bold">{{ covoiturage.price }}
+											crédits</span><br>
+										<small class="text-muted">{{ covoiturage.placesNbr }}
+											place(s)</small>
+									</div>
+
+									<div class="text-end">
+										<span class="badge
+										    {% if covoiturage.statut.value == 'PREVU' %} text-bg-info
+										    {% elseif covoiturage.statut.value == 'EN_COURS' %} text-bg-warning
+										    {% elseif covoiturage.statut.value == 'TERMINE' %} text-bg-success
+										    {% else %} text-bg-secondary
+										    {% endif %}
+										  ">
+											{{ covoiturage.statut.value }}
+										</span>
+
+										{#LE PASSAGER PEUT LAISSER UN AVIS UNE FOIS QUE LE TRAJET EST TERMINER#}
+										{% if covoiturage.statut.value == 'TERMINE' %}
+									    <a href="#" class="btn btn-sm btn-outline-success mt-2">Valider / Avis</a>
+									  	{% endif %} 
+									</div>
+
+								</div>
+							</div>
+
+						{% endfor %}
+					{% endif %}
 
 				</div>
 			</div>
 
-
-			<div
-				class="card my-3 shadow-lg p-3 border-0">
-				<!-- Affichage des covoiturages -->
-				<div class="gap-3 my-3 d-flex align-items-center justify-content-between">
-					<div class="p-3">
-						<h6>
-							Mes Covoiturages
-						</h6>
-					</div>
-					<a href="#" class="lien px-2">
-						Voir tous mes covoiturages
-					</a>
-				</div>
-				<!-- liste des covoiturages -->
-				<div class="gap-3 carte-chauffeur">
-					<div class=" border-bottom px-3 pt-2 rounded d-flex gap-1 align-items-center justify-content-between">
-						<div class="d-flex align-items-center gap-3">
-							<div class="photo ">
-								<img class="photo-chauffeur" src="{{ asset("assets/images/photo1.png") }}" alt="photo profile utilisateur"></img>
-						</div>
-						<div class="text-center ">
-							<h5>
-								{{ app.user.name}}
-							</h5>
-							<p>⭐ 5
-							</p>
-						</div>
-					</div>
-
-					<!-- Affichage infos covoiturage -->
-					<div
-						class="col-md-6 d-flex justify-content-center align-items-center gap-1">
-						<!-- Départ -->
-						<div class="d-flex flex-column text-center">
-							<span class="fw-semibold">10:00</span>
-							<span class="text-muted">Paris</span>
-						</div>
-						<!-- Durée -->
-						<div class="text-center">
-							<span>----- 6H -----</span>
-						</div>
-						<!-- Arrivée -->
-						<div class="d-flex flex-column text-center">
-							<span class="fw-semibold">16:00</span>
-							<span class="text-muted">Marseille</span>
-						</div>
-
-					</div>
-				</div>
-
-				<!-- Affichage infos reservations-->
-				<div class="p-3 d-flex justify-content-between">
-					<div class="text-center">
-						<span>lundi 23 juillet</span>
-					</div>
-					<div class="text-center">
-						<span>places disponible</span>
-					</div>
-					<div class="text-center">
-						<span>voyage écologique</span>
-					</div>
-				</div>
-
-			</div>
-		</div>
-	</main>
-{% endblock %}
+		</main>
+	{% endblock %}

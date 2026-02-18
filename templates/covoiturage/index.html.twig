@@ -1,0 +1,180 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+	<main class="flex-fill">
+
+		<section class="hero-others-pages">
+			<div class="hero-inner container">
+				<h3 class="display-6 fw-bold mb-2 hero-slogan">Voyagez Ecoresponsable</h3>
+				<p class="mb-3 hero-slogan">Partagez vos trajets, Economisez et protégez la planète</p>
+			</div>
+		</section>
+
+		<div class="search-bar-wrapper">
+			{% include 'search_bar.html.twig' %}
+		</div>
+
+		<div class="container my-5">
+
+			<div class="text-center my-4">
+				<h2 class="titre-page">Covoiturages</h2>
+				<p>
+					Bienvenue sur votre historique de covoiturages,
+					<span class="eco fw-bold text-capitalize">{{ app.user.firstName }}</span>
+					!
+				</p>
+			</div>
+
+			<div class="col-md-12 col-lg-6 col-sm-12 mx-auto">
+				<div
+					class="card shadow-lg p-4">
+
+					{# SECTION CHAUFFEUR      #}
+					<h4 class="mb-3">Mes covoiturages (chauffeur)</h4>
+
+					{% if covoituragesDriver is empty %}
+						<div class="text-center text-muted mb-4">
+							Vous n'avez encore créé aucun covoiturage.
+						</div>
+					{% else %}
+						{% for covoiturage in covoituragesDriver %}
+							<div class="p-4 mb-3 carte-chauffeur">
+								<div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+
+									<div>
+										<strong>{{ covoiturage.placeDeparture }}</strong>
+										→
+										<strong>{{ covoiturage.placeArrival }}</strong>
+										<br>
+										<small class="text-muted">
+											{{ covoiturage.dateDeparture|date('d/m/Y') }}
+											à
+											{{ covoiturage.departureTime|date('H:i') }}
+										</small>
+									</div>
+
+									<div class="text-center">
+										<span class="fw-bold">
+											{{ covoiturage.price }}
+											crédits
+										</span>
+										<br>
+										<small class="text-muted">
+											{{ covoiturage.placesNbr }}
+											place(s)
+										</small>
+									</div>
+
+									<div class="d-flex flex-column gap-2 align-items-end">
+										{% if covoiturage.statut.value == 'PREVU' %}
+
+											<form method="post" action="{{ path('app_covoiturage_start', { id: covoiturage.id }) }}" class="w-100">
+												<input type="hidden" name="_token" value="{{ csrf_token('start_covoiturage' ~ covoiturage.id) }}">
+												<button type="submit" class="btn btn-ecoride-reservation w-100">
+													Commencer
+												</button>
+											</form>
+
+											<form method="post" action="{{ path('app_covoiturage_cancel', {id:covoiturage.id}) }}" class="w-100">
+												<input type="hidden" name="_token" value="{{ csrf_token('cancel_covoiturage' ~ covoiturage.id) }}">
+												<button type="submit" class="btn btn-ecoride-annuler w-100">
+													Annuler
+												</button>
+											</form>
+
+										{% elseif covoiturage.statut.value == 'EN_COURS' %}
+
+											<form method="post" action="{{ path('app_covoiturage_finish', {id:covoiturage.id}) }}" class="w-100">
+												<input type="hidden" name="_token" value="{{ csrf_token('finish_covoiturage' ~ covoiturage.id) }}">
+												<button type="submit" class="btn btn-ecoride-reservation w-100">
+													Terminer
+												</button>
+											</form>
+
+										{% elseif covoiturage.statut.value in ['TERMINE', 'ANNULE'] %}
+
+											<form method="post" action="{{ path('app_covoiturage_delete', {id:covoiturage.id}) }}" class="w-100">
+												<input type="hidden" name="_token" value="{{ csrf_token('delete_covoiturage' ~ covoiturage.id) }}">
+												<button type="submit" class="btn btn-ecoride-reservation w-100">
+													Supprimer
+												</button>
+											</form>
+
+										{% endif %}
+									</div>
+
+								</div>
+							</div>
+						{% endfor %}
+					{% endif %}
+
+					<hr
+					class="my-4">
+
+
+					{# SECTION PASSAGER       #}
+					<h4 class="mb-3">Mes covoiturages (passager)</h4>
+
+					{% if covoituragesPassenger is empty %}
+						<div class="text-center text-muted">
+							Vous ne participez à aucun covoiturage pour le moment.
+						</div>
+					{% else %}
+						{% for covoiturage in covoituragesPassenger %}
+							<div class="p-4 mb-3 carte-chauffeur">
+								<div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+
+									<div>
+										<strong>{{ covoiturage.placeDeparture }}</strong>
+										→
+										<strong>{{ covoiturage.placeArrival }}</strong>
+										<br>
+										<small class="text-muted">
+											{{ covoiturage.dateDeparture|date('d/m/Y') }}
+											à
+											{{ covoiturage.departureTime|date('H:i') }}
+										</small>
+									</div>
+
+									<div class="text-center">
+										<span class="fw-bold">
+											{{ covoiturage.price }}
+											crédits
+										</span>
+										<br>
+										<small class="text-muted">
+											{{ covoiturage.placesNbr }}
+											place(s)
+										</small>
+									</div>
+
+									<div class="text-end">
+
+										<span class="badge
+											{% if covoiturage.statut.value == 'PREVU' %} text-bg-info
+											{% elseif covoiturage.statut.value == 'EN_COURS' %} text-bg-warning
+											{% elseif covoiturage.statut.value == 'TERMINE' %} text-bg-success
+											{% else %} text-bg-secondary
+											{% endif %}
+										">
+											{{ covoiturage.statut.value }}
+										</span>
+
+										{% if covoiturage.statut.value == 'TERMINE' %}
+											<a href="#" class="btn btn-sm btn-outline-success mt-2">
+												Valider / Avis
+											</a>
+										{% endif %}
+									</div>
+
+								</div>
+							</div>
+						{% endfor %}
+					{% endif %}
+
+				</div>
+			</div>
+
+		</div>
+	</main>
+{% endblock %}
