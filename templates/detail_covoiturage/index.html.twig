@@ -154,7 +154,7 @@
 														Annuler
 													</button>
                                                     <!-- creer le controller reservation -->
-													<form method="post" action="#">
+													<form method="post" action="{{ path('app_participer', {id: covoiturage.id} ) }}">
 														<input type="hidden" name="_token" value="{{ csrf_token('participer' ~ covoiturage.id) }}">
 														<button type="submit" class="btn btn-sm btn-ecoride">
 															Confirmer

@@ -139,18 +139,18 @@
 								Mes Reservations
 							</h6>
 						</div>
-						<a href="#" class="lien px-2">
+						<a href="{{ path('app_reservation') }}" class="lien px-2">
 							Voir toutes mes reservations
 						</a>
 					</div>
 					<!-- liste des reservations -->
-					<div class="gap-3 mx-3 carte-chauffeur">
+					<div class="gap-3  carte-chauffeur">
 						<div class=" border-bottom px-3 pt-2 rounded d-flex gap-3 align-items-center justify-content-between">
 							<div class=" mh-50 d-flex align-items-center gap-3">
 								<div class="photo ms-2">
 									<img class="photo-chauffeur" src="{{ asset("assets/images/photo1.png") }}" alt="photo profile utilisateur"></img>
 							</div>
-							<div class="text-center pe-2">
+							<div class="text-center">
 								<h5>
 									{{ app.user.name}}
 								</h5>
@@ -161,7 +161,7 @@
 
 						<!-- Affichage infos covoiturage -->
 						<div
-							class="col-md-6 d-flex justify-content-center align-items-center gap-4">
+							class="col-md-6 d-flex justify-content-center align-items-center gap-1">
 							<!-- Départ -->
 							<div class="d-flex flex-column text-center">
 								<span class="fw-semibold">10:00</span>
@@ -211,13 +211,13 @@
 					</a>
 				</div>
 				<!-- liste des covoiturages -->
-				<div class="gap-3 mx-3 carte-chauffeur">
-					<div class=" border-bottom px-3 pt-2 rounded d-flex gap-3 align-items-center justify-content-between">
-						<div class=" mh-50 d-flex align-items-center gap-3">
-							<div class="photo ms-2">
+				<div class="gap-3 carte-chauffeur">
+					<div class=" border-bottom px-3 pt-2 rounded d-flex gap-1 align-items-center justify-content-between">
+						<div class="d-flex align-items-center gap-3">
+							<div class="photo ">
 								<img class="photo-chauffeur" src="{{ asset("assets/images/photo1.png") }}" alt="photo profile utilisateur"></img>
 						</div>
-						<div class="text-center pe-2">
+						<div class="text-center ">
 							<h5>
 								{{ app.user.name}}
 							</h5>
@@ -228,7 +228,7 @@
 
 					<!-- Affichage infos covoiturage -->
 					<div
-						class="col-md-6 d-flex justify-content-center align-items-center gap-4">
+						class="col-md-6 d-flex justify-content-center align-items-center gap-1">
 						<!-- Départ -->
 						<div class="d-flex flex-column text-center">
 							<span class="fw-semibold">10:00</span>
