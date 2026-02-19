@@ -48,7 +48,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $photo = null;
 
     #[ORM\Column]
-    private ?int $credits = 20;
+    private ?int $credits = 0;
 
     #[ORM\Column]
     private ?bool $isDriver = false;

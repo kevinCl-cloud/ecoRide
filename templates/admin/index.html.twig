@@ -1,0 +1,179 @@
+{% extends 'base.html.twig' %}
+
+
+{% block body %}
+<main class="container my-5 flex-fill">
+
+  <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4">
+    <div>
+      <h3 class="mb-1">Espace Administrateur</h3>
+    </div>
+
+    <div class="d-flex gap-2">
+      <a href="#" class="btn btn-outline-secondary btn-sm">Comptes</a>
+      <a href="{{ path('admin_employees_new') }}" class="btn btn-ecoride">Créer un employé</a>
+    </div>
+  </div>
+
+  {% for label, messages in app.flashes %}
+    {% for message in messages %}
+      <div class="alert alert-{{ label }} mb-3">{{ message }}</div>
+    {% endfor %}
+  {% endfor %}
+
+  <div class="row g-3 mb-4">
+    <div class="col-12 col-md-4">
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <div class="text-muted small">Total crédits gagnés plateforme</div>
+          <div class="display-6 fw-bold">{{ totalPlatformCredits ?? 0 }}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row g-3">
+    {# Graphique 1 : covoiturages / jour (barres Bootstrap) #}
+    <div class="col-12 col-lg-6">
+      <div class="card shadow-sm h-100">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <div class="fw-semibold">Covoiturages / jour</div>
+            <span class="text-muted small">7 derniers jours</span>
+          </div>
+
+          {% if covoituragesPerDay is empty %}
+            <div class="alert alert-info mb-0">Aucune donnée.</div>
+          {% else %}
+            {# on attend: [{day: '2026-02-18', cnt: 3}, ...] #}
+            {% set maxCovo = 1 %}
+            {% for row in covoituragesPerDay %}
+              {% if row.cnt > maxCovo %}{% set maxCovo = row.cnt %}{% endif %}
+            {% endfor %}
+
+            <div class="table-responsive">
+              <table class="table table-sm align-middle mb-0">
+                <thead>
+                  <tr>
+                    <th>Jour</th>
+                    <th class="text-end" style="width: 70px;">Nb</th>
+                    <th style="width: 55%;">Graph</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for row in covoituragesPerDay %}
+                    {% set pct = (row.cnt / maxCovo * 100) %}
+                    <tr>
+                      <td class="text-muted">{{ row.day|date('d/m/Y')}}</td>
+                      <td class="text-end fw-semibold">{{ row.cnt }}</td>
+                      <td>
+                        <div class="progress" style="height: 10px;">
+                          <div class="progress-bar" role="progressbar" style="width: {{ pct|round(0, 'floor') }}%"></div>
+                        </div>
+                      </td>
+                    </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    {# Graphique 2 : crédits plateforme / jour (barres Bootstrap) #}
+    <div class="col-12 col-lg-6">
+      <div class="card shadow-sm h-100">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <div class="fw-semibold">Crédits plateforme / jour</div>
+            <span class="text-muted small">7 derniers jours</span>
+          </div>
+
+          {% if platformCreditsPerDay is empty %}
+            <div class="alert alert-info mb-0">Aucune donnée.</div>
+          {% else %}
+            {# on attend: [{day: '2026-02-18', credits: 12}, ...] #}
+            {% set maxCredits = 1 %}
+            {% for row in platformCreditsPerDay %}
+              {% if row.credits > maxCredits %}{% set maxCredits = row.credits %}{% endif %}
+            {% endfor %}
+
+            <div class="table-responsive">
+              <table class="table table-sm align-middle mb-0">
+                <thead>
+                  <tr>
+                    <th>Jour</th>
+                    <th class="text-end" style="width: 90px;">Crédits</th>
+                    <th style="width: 55%;">Graph</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for row in platformCreditsPerDay %}
+                    {% set pct = (row.credits / maxCredits * 100) %}
+                    <tr>
+                      <td class="text-muted">{{ row.day|date('d/m/Y')}}</td>
+                      <td class="text-end fw-semibold">{{ row.credits }}</td>
+                      <td>
+                        <div class="progress" style="height: 10px;">
+                          <div class="progress-bar" role="progressbar" style="width: {{ pct|round(0, 'floor') }}%"></div>
+                        </div>
+                      </td>
+                    </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row g-3 mt-1">
+  <div class="col-12">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+          <div class="fw-semibold">Dernières transactions</div>
+          <a class="btn btn-outline-secondary btn-sm" href="#">
+            Voir tout
+          </a>
+        </div>
+
+        {% if lastTransactions is empty %}
+          <div class="alert alert-info mb-0">Aucune transaction.</div>
+        {% else %}
+          <div class="table-responsive">
+            <table class="table table-sm align-middle mb-0">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Utilisateur</th>
+                  <th>Raison</th>
+                  <th>Type</th>
+                  <th class="text-end">Montant</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for t in lastTransactions %}
+                  <tr>
+                    <td class="text-muted">{{ t.createdAt|date('d/m/Y H:i') }}</td>
+                    <td>{{ t.idUser.pseudo }}</td>
+                    <td><span class="badge text-bg-secondary">{{ t.transactionReason.value }}</span></td>
+                    <td><span class="badge text-bg-light text-dark">{{ t.transactionType.value }}</span></td>
+                    <td class="text-end fw-semibold">{{ t.amount }}</td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+
+
+</main>
+{% endblock %}
+

@@ -20,7 +20,7 @@ class CreditTransaction
     private ?User $idUser = null;
 
     #[ORM\ManyToOne]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: true)]
     private ?Reservation $idReservation = null;
 
     #[ORM\Column]

@@ -63,7 +63,7 @@
 										{% if covoiturage.dateDeparture == 'now' %}
 											<span class="btn btn-ecoride">Commencer le covoiturage</span>
 										{% elseif covoiturage.dateDeparture > "now"|date %}
-											<span class="badge bg-success">À venir</span>
+											<span class="badge w-100 bg-success">À venir</span>
 											<form method="post" action="{{ path('app_reservation_annuler', {id: reservation.id} ) }}" class="mt-2 text-end" onsubmit="return confirm('Confirmer l\'annulation ?');">
 												<input type="hidden" name="_token" value="{{ csrf_token('cancel' ~ reservation.id) }}">
 												<button class="btn-ecoride-reservation">

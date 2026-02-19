@@ -1,0 +1,85 @@
+{% extends 'base.html.twig' %}
+
+
+{% block body %}
+<main class="container my-5 flex-fill">
+
+  <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4">
+    <div>
+      <h3 class="mb-1">Comptes</h3>
+    </div>
+    <div class="d-flex gap-2">
+      <a href="{{path('admin_dashboard')}}" class="btn btn-outline-secondary btn-sm">← Dashboard</a>
+      <a href="{{path('admin_employees_new')}}" class="btn btn-ecoride btn-sm">Créer un employé</a>
+    </div>
+  </div>
+
+  {% for label, messages in app.flashes %}
+    {% for message in messages %}
+      <div class="alert alert-{{ label }} mb-3">{{ message }}</div>
+    {% endfor %}
+  {% endfor %}
+
+  <div class="card shadow-sm">
+    <div class="card-body">
+      <div class="table-responsive">
+        <table class="table align-middle mb-0">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Pseudo</th>
+              <th>Email</th>
+              <th>Rôle</th>
+              <th>Statut</th>
+              <th class="text-end">Action</th>
+            </tr>
+          </thead>
+
+          <tbody>
+          {% for u in users %}
+            <tr>
+              <td class="text-muted">{{ u.id }}</td>
+              <td class="fw-semibold">{{ u.pseudo }}</td>
+              <td class="text-muted">{{ u.email }}</td>
+
+              <td>
+                {% if u.role %}
+                  <span class="badge text-bg-secondary">{{ u.role.libel }}</span>
+                {% else %}
+                  <span class="badge text-bg-light text-dark">User</span>
+                {% endif %}
+              </td>
+
+              <td>
+                {% if u.isSupended %}
+                  <span class="badge text-bg-danger">Suspendu</span>
+                {% else %}
+                  <span class="badge text-bg-success">Actif</span>
+                {% endif %}
+              </td>
+
+              <td class="text-end">
+                <form method="post" action="{{ path('admin_users_toggle_suspend', {id: u.id}) }}" class="d-inline">
+                  <input type="hidden" name="_token" value="{{ csrf_token('toggle_suspend_' ~ u.id) }}">
+                  {% if u.isSupended %}
+                    <button class="btn btn-sm btn-outline-success" type="submit">Réactiver</button>
+                  {% else %}
+                    <button class="btn btn-sm btn-outline-danger" type="submit">Suspendre</button>
+                  {% endif %}
+                </form>
+              </td>
+            </tr>
+          {% else %}
+            <tr>
+              <td colspan="6" class="text-center text-muted py-4">Aucun compte.</td>
+            </tr>
+          {% endfor %}
+          </tbody>
+
+        </table>
+      </div>
+    </div>
+  </div>
+
+</main>
+{% endblock %}

@@ -148,24 +148,28 @@
 										</small>
 									</div>
 
-									<div class="text-end">
+									{% for reservation in reservations %}
+										{% set covoiturage = reservation.idCovoiturage %}
 
-										<span class="badge
-											{% if covoiturage.statut.value == 'PREVU' %} text-bg-info
-											{% elseif covoiturage.statut.value == 'EN_COURS' %} text-bg-warning
-											{% elseif covoiturage.statut.value == 'TERMINE' %} text-bg-success
-											{% else %} text-bg-secondary
+										<div class="text-end d-flex flex-column">
+											<span class="badge
+													      {% if covoiturage.statut.value == 'PREVU' %} text-bg-info
+													      {% elseif covoiturage.statut.value == 'EN_COURS' %} text-bg-warning
+													      {% elseif covoiturage.statut.value == 'TERMINE' %} text-bg-success
+													      {% else %} text-bg-secondary
+													      {% endif %}
+													    ">
+												{{ covoiturage.statut.value }}
+											</span>
+
+											{% if covoiturage.statut.value == 'TERMINE' %}
+												<a href="{{ path('app_notice_create', { id: reservation.id }) }}" class="btn btn-ecoride-reservation btn-outline-success mt-2">
+													Valider / Avis
+												</a>
 											{% endif %}
-										">
-											{{ covoiturage.statut.value }}
-										</span>
+										</div>
+									{% endfor %}
 
-										{% if covoiturage.statut.value == 'TERMINE' %}
-											<a href="#" class="btn btn-sm btn-outline-success mt-2">
-												Valider / Avis
-											</a>
-										{% endif %}
-									</div>
 
 								</div>
 							</div>

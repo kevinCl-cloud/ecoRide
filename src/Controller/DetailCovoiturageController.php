@@ -4,9 +4,9 @@ namespace App\Controller;
 
 use App\Entity\Covoiturage;
 use App\Entity\Reservation;
-use App\Entity\User;
 use App\Repository\ReservationRepository;
-use DateTime;
+use App\Service\CreditTransactionService;
+use App\Enum\CreditTransactionReason;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -15,87 +15,99 @@ use Symfony\Component\Routing\Attribute\Route;
 
 final class DetailCovoiturageController extends AbstractController
 {
-    #[Route('/detail/covoiturage{id}', name: 'app_detail_covoiturage')]
+    #[Route('/detail/covoiturage/{id}', name: 'app_detail_covoiturage', methods: ['GET'])]
     public function index(Covoiturage $covoiturage): Response
     {
-        $user = new User;
-        $user = $user->getId();
         return $this->render('detail_covoiturage/index.html.twig', [
             'covoiturage' => $covoiturage
         ]);
     }
 
-
-    #[Route('/participer{id}', name: 'app_participer')]
-    public function participer(Request $request, Covoiturage $covoiturage, EntityManagerInterface $em, ReservationRepository $reservationRepository): Response
-    {  
+    #[Route('/participer/{id}', name: 'app_participer', methods: ['POST'])]
+    public function participer(
+        Request $request,
+        Covoiturage $covoiturage,
+        EntityManagerInterface $em,
+        ReservationRepository $reservationRepository,
+        CreditTransactionService $creditService
+    ): Response {
         $user = $this->getUser();
 
-        if(!$user){
-            throw $this->createAccessDeniedException('Vous devez etre connecter pour continuer.');
+        if (!$user) {
+            throw $this->createAccessDeniedException('Vous devez être connecté pour continuer.');
         }
 
-        // verifier CSRF
+        // CSRF
         $token = (string) $request->request->get('_token');
         if (!$this->isCsrfTokenValid('participer' . $covoiturage->getId(), $token)) {
             throw $this->createAccessDeniedException('Token CSRF invalide.');
         }
 
-        // verifier que le chauffeur n'es pas le user
-        if($covoiturage->getIdDriver() === $user) {
-            $this->addFlash('danger', 'Vous êtes le chauffeur de ce trajet');
-            return $this->redirectToRoute('app_detail_covoiturage', [
-                'id' => $covoiturage->getId()
-            ]);
+        // Chauffeur ne peut pas réserver son propre trajet
+        if ($covoiturage->getIdDriver() === $user) {
+            $this->addFlash('danger', 'Vous êtes le chauffeur de ce trajet.');
+            return $this->redirectToRoute('app_detail_covoiturage', ['id' => $covoiturage->getId()]);
         }
 
-        // verifier s'il reste de la place
-        if($covoiturage->getPlacesNbr() < 1) {
-            $this->addFlash('danger', 'Ce trajet est complet');
-            return $this->redirectToRoute('app_detail_covoiturage', [
-                'id' => $covoiturage->getId()
-            ]);
+        // Places
+        if ($covoiturage->getPlacesNbr() < 1) {
+            $this->addFlash('danger', 'Ce trajet est complet.');
+            return $this->redirectToRoute('app_detail_covoiturage', ['id' => $covoiturage->getId()]);
         }
 
-        //verifier si crédits suffisant
-        if($covoiturage->getPrice() > $user->getCredits()){
-            $this->addFlash('danger', 'Vos crédits sont insuffisants');
-            return $this->redirectToRoute('app_detail_covoiturage', [
-                'id' => $covoiturage->getId()
-            ]);
-        }
-
+        // Déjà réservé ?
         $alreadyReserved = $reservationRepository->findOneBy([
             'idUser' => $user,
             'idCovoiturage' => $covoiturage,
         ]);
-
         if ($alreadyReserved) {
             $this->addFlash('warning', 'Vous participez déjà à ce trajet.');
             return $this->redirectToRoute('app_detail_covoiturage', ['id' => $covoiturage->getId()]);
         }
 
-        // 7) Création de la réservation + MAJ crédits & places
-        $reservation = new Reservation();
-        $reservation->setIdUser($user);
-        $reservation->setIdCovoiturage($covoiturage);
-        $reservation->setCreatedAt(new DateTime());
+        // ✅ Crédits nécessaires = prix + commission plateforme (2)
+        $price = (int) $covoiturage->getPrice();
+        $fee = 2;
+        $totalNeeded = $price + $fee;
 
-        // MAJ SI LE STATUT DE VALIDATION EST VALIDE
-        $user->setCredits($user->getCredits() - $covoiturage->getPrice());
-        $covoiturage->setPlacesNbr($covoiturage->getPlacesNbr() - 1);
+        if ($user->getCredits() < $totalNeeded) {
+            $this->addFlash('danger', 'Vos crédits sont insuffisants (prix + commission plateforme).');
+            return $this->redirectToRoute('app_detail_covoiturage', ['id' => $covoiturage->getId()]);
+        }
 
-        $em->persist($reservation);
-        $em->flush();
+        // Transaction DB : réservation + places + transactions doivent être atomiques
+        $em->beginTransaction();
+        try {
+            // 1) Créer réservation
+            $reservation = new Reservation();
+            $reservation->setIdUser($user);
+            $reservation->setIdCovoiturage($covoiturage);
+            $reservation->setCreatedAt(new \DateTime());
+
+            // (optionnel mais recommandé) statut si tu l'as ajouté
+            if (method_exists($reservation, 'setStatut')) {
+                $reservation->setStatus('CONFIRMEE');
+            }
+
+            $em->persist($reservation);
+
+            // 2) MAJ places
+            $covoiturage->setPlacesNbr($covoiturage->getPlacesNbr() - 1);
+
+            // 3) Débit + log transactions (2 lignes)
+            $creditService->debit($user, $reservation, $price, CreditTransactionReason::PAIEMENT_RESERVATION);
+            $creditService->debit($user, $reservation, $fee, CreditTransactionReason::COMMISSION_PLATEFORME);
+
+            // 4) Flush
+            $creditService->flush();
+
+            $em->commit();
+        } catch (\Throwable $e) {
+            $em->rollback();
+            throw $e;
+        }
 
         $this->addFlash('success', 'Participation confirmée !');
-
-        // 8) Redirection (POST -> Redirect -> GET)
         return $this->redirectToRoute('app_detail_covoiturage', ['id' => $covoiturage->getId()]);
-
     }
-
-    
-
 }
-

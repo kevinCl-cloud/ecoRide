@@ -178,7 +178,7 @@
 
 											{% elseif covoiturage.dateDeparture > "now"|date %}
 
-												<span class="badge p-1 bg-success">À venir</span>
+												<span class="badge p-1 w-100 bg-success">À venir</span>
 												<form method="post" action="{{ path('app_reservation_annuler', {id: reservation.id} ) }}" class="mt-2 text-end" onsubmit="return confirm('Confirmer l\'annulation ?');">
 													<input type="hidden" name="_token" value="{{ csrf_token('cancel' ~ reservation.id) }}">
 													<button class="btn-ecoride-reservation">
@@ -209,7 +209,7 @@
 					<div class="d-flex justify-content-between">
 						<h4 class="mb-4">Mes covoiturages (chauffeur)</h4>
 						<a href="{{ path('app_covoiturage') }}" class="lien px-2">
-							Voir toutes covoiturages
+							Voir touts mes covoiturages
 						</a>
 					</div>
 					{# SECTION CHAUFFEUR  #}
@@ -261,7 +261,7 @@
 
 										{% elseif covoiturage.statut.value == 'EN_COURS' %}
 
-											<form method="post" action="#" class="w-100">
+											<form method="post" action="{{path('app_covoiturage_finish', {id:covoiturage.id})}}" class="w-100">
 												<input type="hidden" name="_token" value="{{ csrf_token('finish_covoiturage' ~ covoiturage.id) }}">
 												<button type="submit" class="btn btn-ecoride-reservation w-100">
 													Terminer
@@ -326,22 +326,28 @@
 											place(s)</small>
 									</div>
 
-									<div class="text-end">
-										<span class="badge
-										    {% if covoiturage.statut.value == 'PREVU' %} text-bg-info
-										    {% elseif covoiturage.statut.value == 'EN_COURS' %} text-bg-warning
-										    {% elseif covoiturage.statut.value == 'TERMINE' %} text-bg-success
-										    {% else %} text-bg-secondary
-										    {% endif %}
-										  ">
-											{{ covoiturage.statut.value }}
-										</span>
+									{% for reservation in reservations %}
+										{% set covoiturage = reservation.idCovoiturage %}
 
-										{#LE PASSAGER PEUT LAISSER UN AVIS UNE FOIS QUE LE TRAJET EST TERMINER#}
-										{% if covoiturage.statut.value == 'TERMINE' %}
-									    <a href="#" class="btn btn-sm btn-outline-success mt-2">Valider / Avis</a>
-									  	{% endif %} 
-									</div>
+										<div class="text-end d-flex flex-column">
+											<span class="badge
+													      {% if covoiturage.statut.value == 'PREVU' %} text-bg-info
+													      {% elseif covoiturage.statut.value == 'EN_COURS' %} text-bg-warning
+													      {% elseif covoiturage.statut.value == 'TERMINE' %} text-bg-success
+													      {% else %} text-bg-secondary
+													      {% endif %}
+													    ">
+												{{ covoiturage.statut.value }}
+											</span>
+
+											{% if covoiturage.statut.value == 'TERMINE' %}
+												<a href="{{ path('app_notice_create', { id: reservation.id }) }}" class="btn btn-ecoride-reservation btn-outline-success mt-2">
+													Valider / Avis
+												</a>
+											{% endif %}
+										</div>
+									{% endfor %}
+
 
 								</div>
 							</div>

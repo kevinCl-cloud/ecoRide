@@ -68,4 +68,22 @@ class CovoiturageRepository extends ServiceEntityRepository
                   ->getQuery()
                   ->getResult();
     }
+
+    public function countPerDayLastDays(int $days = 7): array
+    {
+        $from = (new \DateTimeImmutable())
+            ->modify(sprintf('-%d days', $days - 1))
+            ->setTime(0, 0, 0);
+
+        return $this->createQueryBuilder('c')
+            ->select('c.dateDeparture AS day, COUNT(c.id) AS cnt')
+            ->where('c.dateDeparture >= :from')
+            ->setParameter('from', $from)
+            ->groupBy('c.dateDeparture')
+            ->orderBy('c.dateDeparture', 'ASC')
+            ->getQuery()
+            ->getArrayResult();
+    }
+
+
 }

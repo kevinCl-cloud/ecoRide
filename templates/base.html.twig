@@ -22,13 +22,11 @@
 						<div class="logo"></div>
 						<span>
 							<h3>
-								<span class="eco font-weight-bold">Eco</span><span class="ride">Ride</span>
+								<span class="eco font-weight-bold">Eco</span>
+								<span class="ride">Ride</span>
 							</h3>
 						</span>
 					</a>
-					<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#ecorideNav" aria-controls="ecorideNav" aria-expanded="false" aria-label="Menu">
-						<span class="navbar-toggler-icon"></span>
-					</button>
 					<div class="collapse navbar-collapse" id="ecorideNav">
 						<ul class="navbar-nav mx-auto mb-2 mb-lg-0 gap-lg-2">
 							<li class="nav-item">
@@ -46,12 +44,21 @@
 						</ul>
 						<div class="d-flex align-items-center gap-2">
 							{% if app.user %}
-								<a class="btn btn-sm px-3 btn-outline-success" href="{{ path('app_account') }}">
-									Mon espace
-								</a>
+
+								{% if is_granted('ROLE_ADMIN') %}
+									<a class="btn btn-sm px-3 btn-outline-success" href="{{path('admin_dashboard')}}">
+										Espace Admin
+									</a>
+								{% else %}
+									<a class="btn btn-sm px-3 btn-outline-success" href="{{ path('app_account') }}">
+										Mon espace
+									</a>
+								{% endif %}
+
 								<a class="btn btn-sm px-3 btn-ecoride" href="{{ path('app_logout') }}">
 									Déconnexion
 								</a>
+
 							{% else %}
 								<a class="btn btn-sm px-3 connexion" href="{{ path('app_login') }}">
 									Se connecter
@@ -60,6 +67,7 @@
 									S'inscrire
 								</a>
 							{% endif %}
+
 						</div>
 					</div>
 				</div>

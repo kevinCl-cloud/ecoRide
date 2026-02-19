@@ -1,0 +1,66 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+	<section class="hero-others-pages">
+		<div class="hero-inner container">
+			<h3 class="display-6 fw-bold mb-2 hero-slogan">Voyagez Ecoresponsable</h3>
+			<p class="mb-3 hero-slogan">Partagez vos trajets, Economisez et protégez la planète</p>
+		</div>
+	</section>
+
+	<main class="container my-5 flex-fill">
+		<div class="col-md-8 col-lg-6 mx-auto">
+
+			<div class="card shadow-lg border-0">
+				<div class="card-body p-4">
+
+					<h4 class="mb-1">Laisser un avis sur votre trajet avec
+						{{ reservation.idCovoiturage.idDriver.pseudo }}
+					</h4>
+					<p class="text-muted mb-3">Votre retour aide à améliorer la qualité des trajets.</p>
+
+					<div class="bg-light d-flex flex-column rounded p-3 mb-4">
+						<div class="fw-semibold mb-1">Trajet</div>
+
+						<div>
+							<strong>{{ reservation.idCovoiturage.placeDeparture }}</strong>
+							→
+							<strong>{{ reservation.idCovoiturage.placeArrival }}</strong>
+						</div>
+						<div class="text-muted small mt-1">
+							{{ reservation.idCovoiturage.dateDeparture|date('d/m/Y') }}
+							à
+							{{ reservation.idCovoiturage.departureTime|date('H:i') }}
+						</div>
+					</div>
+
+					{{ form_start(form) }}
+
+					{{ form_row(form.rating) }}
+					{{ form_row(form.commentNotice, { attr: { rows: 4 } }) }}
+
+					{{ form_end(form) }}
+					<div class="d-flex gap-2 mt-3">
+
+						<button class="btn btn-success w-100" type="submit">
+							Envoyer mon avis
+						</button>
+
+						{# Form POST pour Ignorer #}
+						<form method="post" action="{{ path('app_notice_ignore', { id: reservation.id }) }}" class="w-100">
+
+							<input type="hidden" name="_token" value="{{ csrf_token('ignore_notice' ~ reservation.id) }}">
+
+							<button type="submit" class="btn btn-ecoride-annuler btn-outline w-100">
+								Ignorer
+							</button>
+						</form>
+
+					</div>
+
+				</div>
+			</div>
+
+		</div>
+	</main>
+{% endblock %}

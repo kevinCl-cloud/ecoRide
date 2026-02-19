@@ -74,6 +74,7 @@ final class CovoiturageController extends AbstractController
             'covoiturageForm' => $covoiturageForm->createView(),
             'covoituragesDriver' => $covoituragesDriver,
             'covoituragesPassenger' => $covoituragesPassenger,
+            'reservations' => $reservations
         ]);
     }
 
@@ -163,7 +164,7 @@ final class CovoiturageController extends AbstractController
         // On ne peut terminer que si EN_COURS
         if ($covoiturage->getStatut() !== CovoiturageStatus::EN_COURS) {
             $this->addFlash('warning', 'Ce covoiturage ne peut pas être terminé.');
-            return $this->redirectToRoute('app_account'); // ou app_covoiturage selon ta page
+            return $this->redirectToRoute('app_account'); 
         }
     
         // Mise à jour statut
@@ -172,7 +173,7 @@ final class CovoiturageController extends AbstractController
         $em->flush();
     
         $this->addFlash('success', 'Le covoiturage est maintenant terminé.');
-        return $this->redirectToRoute('app_account'); // ou app_covoiturage
+        return $this->redirectToRoute('app_account'); 
     }
 
 
