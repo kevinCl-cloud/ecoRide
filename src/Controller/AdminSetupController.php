@@ -17,7 +17,7 @@ class AdminSetupController extends AbstractController
     ): Response {
 
         $user = $userRepository->findOneBy([
-            'email' => 'admin@ecoride.com'
+            'email' => 'admin@ecoride.fr'
         ]);
 
         if (!$user) {
