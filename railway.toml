@@ -1,6 +1,5 @@
 [build]
 builder = "NIXPACKS"
-buildCommand = "composer install --no-dev --optimize-autoloader"
 
 [deploy]
-startCommand = "php -S 0.0.0.0:$PORT -t public"
+startCommand = "php bin/console doctrine:migrations:migrate --no-interaction && php bin/console cache:clear --env=prod && php -S 0.0.0.0:$PORT -t public"
