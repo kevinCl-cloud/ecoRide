@@ -5,6 +5,6 @@ builder = "NIXPACKS"
 buildCommand = "export COMPOSER_ALLOW_SUPERUSER=1 && composer install --no-dev --prefer-dist --no-interaction --optimize-autoloader --no-scripts"
 
 [deploy]
-preDeployCommand = "bash -lc 'php -r \"$u=parse_url(getenv(\\\"DATABASE_URL\\\")); if(!$u){fwrite(STDERR,\\\"Bad DATABASE_URL\\\\n\\\"); exit(2);} $host=$u[\\\"host\\\"]??\\\"\\\"; $port=$u[\\\"port\\\"]??3306; $db=ltrim($u[\\\"path\\\"]??\\\"\\\",\\\"/\\\"); $user=$u[\\\"user\\\"]??\\\"\\\"; $pass=$u[\\\"pass\\\"]??\\\"\\\"; $dsn=\\\"mysql:host=$host;port=$port;dbname=$db;charset=utf8mb4\\\"; for($i=1;$i<=40;$i++){ try{ new PDO($dsn,$user,$pass,[PDO::ATTR_TIMEOUT=>2]); echo \\\"DB OK\\\\n\\\"; exit(0);} catch(Exception $e){ echo \\\"Waiting for DB... ($i/40)\\\\n\\\"; sleep(2);} } echo \\\"DB still not reachable\\\\n\\\"; exit(1);\" && php bin/console doctrine:migrations:migrate --no-interaction --allow-no-migration --env=prod'"
-
+preDeployCommand = "bash -lc 'for i in {1..40}; do php bin/console doctrine:migrations:migrate --no-interaction --allow-no-migration --env=prod && exit 0; echo \"Waiting for DB... ($i/40)\"; sleep 2; done; echo \"DB still not reachable\"; exit 1'"
 startCommand = "php -S 0.0.0.0:${PORT} -t public"
+
