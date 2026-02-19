@@ -97,7 +97,8 @@ class AdminController extends AbstractController
             $plain = $form->get('plainPassword')->getData();
             $employee->setPassword($passwordHasher->hashPassword($employee, $plain));
 
-            // Champs par défaut cohérents avec ton User
+
+            $employee->setPseudo($employee->getName().$employee->getFirstName());
             $employee->setCredits(0);
             $employee->setIsDriver(false);
             $employee->setIsPassenger(false);

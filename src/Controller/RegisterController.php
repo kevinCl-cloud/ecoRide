@@ -8,6 +8,7 @@ use App\Service\CreditTransactionService;
 use App\Enum\CreditTransactionReason;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -25,6 +26,23 @@ final class RegisterController extends AbstractController
         $registerForm->handleRequest($request);
 
         if ($registerForm->isSubmitted() && $registerForm->isValid()) {
+
+            $photoFile = $registerForm->get('photo')->getData();
+
+            if ($photoFile) {
+                $newFilename = uniqid() . '.' . $photoFile->guessExtension();
+
+                try {
+                    $photoFile->move(
+                        $this->getParameter('kernel.project_dir') . '/public/uploads/photos',
+                        $newFilename
+                    );
+                } catch (FileException $e) {
+                    throw $e;
+                }
+
+                $user->setPhoto($newFilename);
+            }
 
             if (method_exists($user, 'setCreatedAt')) {
                 $user->setCreatedAt(new \DateTimeImmutable());

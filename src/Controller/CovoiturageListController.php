@@ -35,7 +35,6 @@ final class CovoiturageListController extends AbstractController
         }
 
 
-
         return $this->render('covoiturage_list/index.html.twig', [
             'covoiturageForm' => $covoiturageForm->createView(),
             'covoiturages' => $covoiturages,

@@ -65,7 +65,7 @@ final class DetailCovoiturageController extends AbstractController
             return $this->redirectToRoute('app_detail_covoiturage', ['id' => $covoiturage->getId()]);
         }
 
-        // ✅ Crédits nécessaires = prix + commission plateforme (2)
+        //  Crédits nécessaires = prix + commission plateforme (2)
         $price = (int) $covoiturage->getPrice();
         $fee = 2;
         $totalNeeded = $price + $fee;
@@ -75,26 +75,26 @@ final class DetailCovoiturageController extends AbstractController
             return $this->redirectToRoute('app_detail_covoiturage', ['id' => $covoiturage->getId()]);
         }
 
-        // Transaction DB : réservation + places + transactions doivent être atomiques
+        // Transaction DB : réservation + places + transactions 
         $em->beginTransaction();
         try {
-            // 1) Créer réservation
+            //  Créer réservation
             $reservation = new Reservation();
             $reservation->setIdUser($user);
             $reservation->setIdCovoiturage($covoiturage);
             $reservation->setCreatedAt(new \DateTime());
 
-            // (optionnel mais recommandé) statut si tu l'as ajouté
+            //  statut si tu l'as ajouté
             if (method_exists($reservation, 'setStatut')) {
                 $reservation->setStatus('CONFIRMEE');
             }
 
             $em->persist($reservation);
 
-            // 2) MAJ places
+            //  MAJ places
             $covoiturage->setPlacesNbr($covoiturage->getPlacesNbr() - 1);
 
-            // 3) Débit + log transactions (2 lignes)
+            // Débit + log transactions 
             $creditService->debit($user, $reservation, $price, CreditTransactionReason::PAIEMENT_RESERVATION);
             $creditService->debit($user, $reservation, $fee, CreditTransactionReason::COMMISSION_PLATEFORME);
 
@@ -108,6 +108,6 @@ final class DetailCovoiturageController extends AbstractController
         }
 
         $this->addFlash('success', 'Participation confirmée !');
-        return $this->redirectToRoute('app_detail_covoiturage', ['id' => $covoiturage->getId()]);
+        return $this->redirectToRoute('app_account');
     }
 }

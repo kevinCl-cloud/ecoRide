@@ -12,12 +12,12 @@
 			</div>
 		</section>
 
-		{# BARRE DE RECHERCHE (INCLUDE) #}
+		{# BARRE DE RECHERCHE #}
 		<div class="search-bar-wrapper">
 			{% include 'search_bar.html.twig' %}
 		</div>
 
-		{# CONTENU PAGE : FILTRES + RESULTATS #}
+		{# FILTRES + RESULTATS #}
 		<div class="container my-5">
 			<div
 				class="row g-4 p-4 justify-content-center">
@@ -106,7 +106,7 @@
 									{# Bloc chauffeur #}
 									<div class="d-flex flex-wrap align-items-center gap-3">
 										<div class="photo ms-2">
-											<img class="photo-chauffeur" src="{{ asset('assets/images/photo1.png') }}" alt="photo profile utilisateur">
+											<img class="photo-chauffeur" src="{{ asset('uploads/photos/'~covoiturage.idDriver.photo) }}" alt="photo profile utilisateur">
 										</div>
 
 										<div class="text-center pe-2">

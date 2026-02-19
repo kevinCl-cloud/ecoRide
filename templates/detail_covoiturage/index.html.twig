@@ -20,7 +20,7 @@
 					<h3>Détail du trajet</h3>
 				</div>
 
-				{# BLOC HAUT : CARTE + PRIX (COTE A COTE) #}
+				{#  CARTE + PRIX (COTE A COTE) #}
 				<div class="col-12 col-lg-7">
 					<div class="row g-3 align-items-stretch">
 
@@ -28,12 +28,12 @@
 						<div class="col-12 col-md-9 d-flex">
 							<div class="p-3 carte-chauffeur-detail w-100 h-100">
 
-								{# HEADER CARTE : CHAUFFEUR + INFOS TRAJET #}
+								{# CHAUFFEUR + INFOS TRAJET #}
 								<div class="border-bottom px-2 pt-2 rounded d-flex flex-wrap justify-content-between gap-3 align-items-center">
 									{# Bloc chauffeur #}
 									<div class="d-flex flex-wrap align-items-center justify-content-center gap-3">
 										<div class="photo ms-2 p-2">
-											<img class="photo-chauffeur" src="{{ asset('assets/images/photo1.png') }}" alt="photo profile utilisateur">
+											<img class="photo-chauffeur" src="{{ asset('uploads/photos/'~ covoiturage.idDriver.photo) }}" alt="photo profile uchauffeur">
 										</div>
 
 										<div class="text-center pe-2">
@@ -95,7 +95,7 @@
 									<h5 class="mb-0">{{ covoiturage.price }} Crédits</h5>
 								</div>
 
-								{# 1) Pas connecté -> login #}
+								{#  Pas connecté -> login #}
 								{% if not isLogged %}
 									<a class="btn btn-sm px-3 btn-ecoride"
 									   href="{{ path('app_login') }}">
@@ -103,27 +103,27 @@
 									</a>
 									<small class="text-muted mt-2">Connectez-vous pour participer</small>
 
-								{# 2) Chauffeur -> interdit #}
+								{#  Chauffeur -> interdit #}
 								{% elseif isDriverOfRide %}
 									<button class="btn btn-sm px-3 btn-ecoride" disabled>
 										Vous êtes le chauffeur
 									</button>
 
-								{# 3) Plus de place #}
+								{#  Plus de place #}
 								{% elseif not placesOk %}
 									<button class="btn btn-sm px-3 btn-ecoride" disabled>
 										Trajet complet
 									</button>
 									<small class="text-muted mt-2">Plus aucune place disponible</small>
 
-								{# 4) Crédits insuffisants #}
+								{#  Crédits insuffisants #}
 								{% elseif not creditsOk %}
 									<button class="btn btn-sm px-3 btn-ecoride" disabled>
 										Crédits insuffisants
 									</button>
 									<small class="text-muted mt-2">Solde : {{ userCredits }} crédits</small>
 
-								{# 5) OK -> double confirmation (modal + POST) #}
+								{#  OK -> double confirmation  #}
 								{% else %}
 									<button type="button"
 											class="btn btn-sm px-3 btn-ecoride"
@@ -171,14 +171,14 @@
 
 					</div>
 
-					{# BLOC BAS : PREFERENCES + AVIS (COTE A COTE) #}
+					{#  PREFERENCES + AVIS  #}
 					<div class="row mt-4 gx-4">
 
 						{# COLONNE Préférences #}
 						<div class="col-12 col-lg-6 preference">
 							<div class="d-flex align-items-center gap-3">
 								<div class="photo ms-2 p-2">
-									<img class="photo-chauffeur" src="{{ asset('assets/images/photo1.png') }}" alt="photo profile utilisateur">
+									<img class="photo-chauffeur" src="{{ asset('uploads/photos/'~ covoiturage.idDriver.photo) }}" alt="photo profile chauffeur">
 								</div>
 
 								<div class="text-center pe-2">

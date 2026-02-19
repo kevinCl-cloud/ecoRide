@@ -39,12 +39,12 @@
 					{{ form_row(form.rating) }}
 					{{ form_row(form.commentNotice, { attr: { rows: 4 } }) }}
 
-					{{ form_end(form) }}
 					<div class="d-flex gap-2 mt-3">
 
 						<button class="btn btn-success w-100" type="submit">
 							Envoyer mon avis
 						</button>
+					{{ form_end(form) }}
 
 						{# Form POST pour Ignorer #}
 						<form method="post" action="{{ path('app_notice_ignore', { id: reservation.id }) }}" class="w-100">

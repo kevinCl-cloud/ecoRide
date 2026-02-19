@@ -9,9 +9,7 @@ use App\Enum\CreditTransactionType;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
-/**
- * @extends ServiceEntityRepository<CreditTransaction>
- */
+
 class CreditTransactionRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
@@ -19,8 +17,8 @@ class CreditTransactionRepository extends ServiceEntityRepository
         parent::__construct($registry, CreditTransaction::class);
     }
 
-     //US13 - Crédits plateforme / jour sur N jours
-      //Retour: [ ['day' => '2026-02-18', 'credits' => 12], ... ]
+     // Crédits plateforme / jour sur N jours
+
     public function platformCreditsPerDayLastDays(int $days = 7): array
     {
         $from = (new \DateTimeImmutable())

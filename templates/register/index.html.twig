@@ -18,7 +18,19 @@
                         Rejoins <span class="eco fw-bold">Eco</span><span class="ride">Ride</span> et commence à covoiturer.
                     </p>
                 </div>
-                {{ form(registerForm) }}
+
+                {{ form_start(registerForm, {'attr': {'enctype': 'multipart/form-data'}}) }}
+
+                    {# affiche tous les champs du form #}
+                    {{ form_row(registerForm.photo) }}
+                    {{ form_row(registerForm.name) }}
+                    {{ form_row(registerForm.firstName) }}
+                    {{ form_row(registerForm.pseudo) }}
+                    {{ form_row(registerForm.email) }}
+                    {{ form_row(registerForm.plainPassword) }}
+                    {{ form_rest(registerForm) }}
+                {{ form_end(registerForm) }}
+
             </div>
         </div>
     </div>

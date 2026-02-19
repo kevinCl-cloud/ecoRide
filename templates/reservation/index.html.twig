@@ -60,20 +60,49 @@
 									</div>
 
 									<div>
-										{% if covoiturage.dateDeparture == 'now' %}
-											<span class="btn btn-ecoride">Commencer le covoiturage</span>
-										{% elseif covoiturage.dateDeparture > "now"|date %}
-											<span class="badge w-100 bg-success">À venir</span>
-											<form method="post" action="{{ path('app_reservation_annuler', {id: reservation.id} ) }}" class="mt-2 text-end" onsubmit="return confirm('Confirmer l\'annulation ?');">
-												<input type="hidden" name="_token" value="{{ csrf_token('cancel' ~ reservation.id) }}">
-												<button class="btn-ecoride-reservation">
-													Annuler
-												</button>
-											</form>
-										{% else %}
-											<span class="badge bg-secondary">Terminé</span>
-										{% endif %}
-									</div>
+											{% if reservation.status.value == 'EN_ATTENTE' %}
+
+												{% if covoiturage.dateDeparture|date('Y-m-d') == "now"|date('Y-m-d') %}
+													<span class="badge p-1 w-100 bg-success">Aujourdhui</span>
+
+												{% elseif covoiturage.dateDeparture > "now" %}
+													<span class="badge p-1 w-100 bg-success">À venir</span>
+
+													<form method="post" action="{{ path('app_reservation_annuler', {id: reservation.id}) }}" class="mt-2 text-end">
+														<input type="hidden" name="_token" value="{{ csrf_token('cancel' ~ reservation.id) }}">
+														<button class="btn-ecoride-reservation w-100">
+															Annuler
+														</button>
+													</form>
+
+												{% else %}
+													<span class="badge bg-success">Terminé</span>
+												{% endif %}
+
+											{% elseif reservation.status.value == 'ANNULEE' %}
+												<span class="badge bg-secondary">Annulée</span>
+
+												<form method="post" action="{{ path('app_reservation_delete_history', {id: reservation.id}) }}" class="mt-2 text-end">
+													<input type="hidden" name="_token" value="{{ csrf_token('delete_history' ~ reservation.id) }}">
+													<button class="btn-ecoride-reservation">
+														Supprimer
+													</button>
+												</form>
+
+											{% elseif reservation.status.value == 'TERMINEE' %}
+												<span class="badge bg-success">Terminée</span>
+
+											{% else %}
+												<span class="badge bg-light text-dark">{{ reservation.status.value }}</span>
+
+												<form method="post" action="{{ path('app_reservation_delete_history', {id: reservation.id}) }}" class="mt-2 text-end">
+													<input type="hidden" name="_token" value="{{ csrf_token('delete_history' ~ reservation.id) }}">
+													<button class="btn-ecoride-reservation">
+														Supprimer de l'historique
+													</button>
+												</form>
+											{% endif %}
+										</div>
 
 								</div>
 

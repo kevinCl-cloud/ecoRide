@@ -26,6 +26,7 @@ final class CovoiturageController extends AbstractController
 
         $user = $this->getUser();
 
+        // Formulaire de recherche
         $search = new CovoiturageSearch();
         $covoiturageForm = $this->createForm(CovoiturageSearchType::class, $search);
         $covoiturageForm->handleRequest($request);
@@ -38,43 +39,50 @@ final class CovoiturageController extends AbstractController
             ]);
         }
 
-        //   Historique chauffeur (mes covoiturages créés)
+        // Historique chauffeur (mes covoiturages créés)
         $covoituragesDriver = $covoiturageRepository->findBy(
             ['idDriver' => $user],
             ['dateDeparture' => 'DESC']
         );
 
-        //   Historique passager (trajets où j'ai une réservation)
+        // Réservations de l'utilisateur (sert à construire l'historique passager)
         $reservations = $reservationRepository->findBy(
             ['idUser' => $user],
-            ['created_at' => 'DESC'] 
+            ['created_at' => 'DESC']
         );
 
-        $covoituragesPassenger = [];
+        $passengerParticipations = [];
+
         foreach ($reservations as $reservation) {
             $covoiturage = $reservation->getIdCovoiturage();
 
-            if (!$covoiturage) {
+            if (!$covoiturage instanceof Covoiturage) {
                 continue;
             }
 
-            // On évite d'afficher en passager un trajet dont je suis le chauffeur
+            // éviter d'afficher en passager un trajet dont je suis le chauffeur
             if ($covoiturage->getIdDriver() && $covoiturage->getIdDriver() === $user) {
                 continue;
             }
 
-            // éviter les doublons (au cas où)
-            $covoituragesPassenger[$covoiturage->getId()] = $covoiturage;
+            $cid = $covoiturage->getId();
+
+            // éviter doublons : 1 covoiturage = 1 entrée
+            if (!isset($passengerParticipations[$cid])) {
+                $passengerParticipations[$cid] = [
+                    'covoiturage' => $covoiturage,
+                    'reservation' => $reservation,
+                ];
+            }
         }
 
-        
-        $covoituragesPassenger = array_values($covoituragesPassenger);
+        $passengerParticipations = array_values($passengerParticipations);
 
         return $this->render('covoiturage/index.html.twig', [
             'covoiturageForm' => $covoiturageForm->createView(),
             'covoituragesDriver' => $covoituragesDriver,
-            'covoituragesPassenger' => $covoituragesPassenger,
-            'reservations' => $reservations
+            'passengerParticipations' => $passengerParticipations,
+            'reservations' => $reservations,
         ]);
     }
 
@@ -129,7 +137,7 @@ final class CovoiturageController extends AbstractController
         //  on annule seulement si PREVU
         if ($covoiturage->getStatut() !== CovoiturageStatus::PREVU) {
             $this->addFlash('warning', 'Ce covoiturage ne peut pas être annulé.');
-            return $this->redirectToRoute('app_account'); // ou app_covoiturage
+            return $this->redirectToRoute('app_account'); 
         }
 
         // Mise à jour statut
@@ -138,7 +146,7 @@ final class CovoiturageController extends AbstractController
         $em->flush();
 
         $this->addFlash('success', 'Le covoiturage a été annulé.');
-        return $this->redirectToRoute('app_account'); // ou app_covoiturage
+        return $this->redirectToRoute('app_account'); 
     }
 
 
@@ -209,5 +217,4 @@ final class CovoiturageController extends AbstractController
     }
 
 }
-
 

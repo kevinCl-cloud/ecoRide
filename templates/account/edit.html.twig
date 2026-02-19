@@ -1,0 +1,81 @@
+{% extends 'base.html.twig' %}
+
+
+{% block body %}
+
+
+	<main class="flex-fill">
+		<section class="hero-others-pages">
+			<div class="hero-inner container">
+				<h3 class="display-6 fw-bold mb-2 hero-slogan">Voyagez Ecoresponsable</h3>
+				<p class="mb-3 hero-slogan">Partagez vos trajets, Economisez et protégez la planète</p>
+			</div>
+		</section>
+		<div class="container my-5">
+			<div class="row justify-content-center">
+				<div class="col-12 col-md-10 col-lg-6">
+
+					<div class="card shadow-lg border-0 p-4">
+
+						{% for label, messages in app.flashes %}
+							{% for message in messages %}
+								<div class="alert alert-{{ label }} mb-3">{{ message }}</div>
+							{% endfor %}
+						{% endfor %}
+
+						{{ form_start(form, {'attr': {'enctype': 'multipart/form-data'}}) }}
+
+						<div class="mb-3">
+							{{ form_label(form.name) }}
+							{{ form_widget(form.name, {'attr': {'class': 'form-control', 'placeholder': 'Entrez votre nom'}}) }}
+							{{ form_errors(form.name) }}
+						</div>
+
+						<div class="mb-3">
+							{{ form_label(form.firstName) }}
+							{{ form_widget(form.firstName, {'attr': {'class': 'form-control', 'placeholder': 'Entrez votre prenom'}}) }}
+							{{ form_errors(form.firstName) }}
+						</div>
+
+						<div class="mb-3">
+							{{ form_label(form.pseudo) }}
+							{{ form_widget(form.pseudo, {'attr': {'class': 'form-control', 'placeholder': 'Entrez votre pseudo'}}) }}
+							{{ form_errors(form.pseudo) }}
+						</div>
+
+						<div class="mb-3">
+							{{ form_label(form.email) }}
+							{{ form_widget(form.email, {'attr': {'class': 'form-control', 'placeholder': 'exemple@email.com'}}) }}
+							{{ form_errors(form.email) }}
+						</div>
+
+						{# Photo  #}
+						<div class="mb-4">
+							{{ form_label(form.photo) }}
+							{{ form_widget(form.photo, {'attr': {'class': 'form-control'}}) }}
+							{{ form_errors(form.photo) }}
+
+						</div>
+
+						<div class="d-flex gap-2">
+							<button type="submit" class="btn btn-ecoride w-100">
+								Enregistrer
+							</button>
+						</div>
+
+						<div class="text-center mt-3">
+							<a href="{{ path('app_account') }}" class="text-decoration-none lien">
+								Retour à mon espace
+							</a>
+						</div>
+
+						{{ form_end(form) }}
+
+					</div>
+				</div>
+			</div>
+		</div>
+
+	</main>
+
+{% endblock %}

@@ -17,20 +17,29 @@ class CovoiturageRepository extends ServiceEntityRepository
     public function search(CovoiturageSearch $search, array $filters = []): array
     {
         $qb = $this->createQueryBuilder('c')
+            ->distinct()
             ->leftJoin('c.idVehicule', 'v')
             ->addSelect('v');
+
+        //  Uniquement les trajets "PREVU"
+        $qb->andWhere('c.statut = :statusPrevu')
+        ->setParameter('statusPrevu', \App\Enum\CovoiturageStatus::PREVU);
+
+        //  Au moins 1 place disponible
+        $qb->andWhere('c.placesNbr >= :minAvailable')
+        ->setParameter('minAvailable', 1);
 
         $departure = trim((string) $search->getPlaceDeparture());
         $arrival   = trim((string) $search->getPlaceArrival());
 
         if ($departure !== '') {
             $qb->andWhere('LOWER(c.placeDeparture) LIKE :departure')
-               ->setParameter('departure', '%'.mb_strtolower($departure).'%');
+            ->setParameter('departure', '%'.mb_strtolower($departure).'%');
         }
 
         if ($arrival !== '') {
             $qb->andWhere('LOWER(c.placeArrival) LIKE :arrival')
-               ->setParameter('arrival', '%'.mb_strtolower($arrival).'%');
+            ->setParameter('arrival', '%'.mb_strtolower($arrival).'%');
         }
 
         if ($search->getDateDeparture()) {
@@ -39,35 +48,38 @@ class CovoiturageRepository extends ServiceEntityRepository
             $end   = $start->modify('+1 day');
 
             $qb->andWhere('c.dateDeparture >= :start')
-               ->andWhere('c.dateDeparture < :end')
-               ->setParameter('start', $start)
-               ->setParameter('end', $end);
+            ->andWhere('c.dateDeparture < :end')
+            ->setParameter('start', $start)
+            ->setParameter('end', $end);
         }
 
         if (!empty($filters['energy'])) {
             $qb->andWhere('v.energy = :energy')
-               ->setParameter('energy', $filters['energy']);
+            ->setParameter('energy', $filters['energy']);
         }
 
         if (!empty($filters['maxPrice'])) {
             $qb->andWhere('c.price <= :maxPrice')
-               ->setParameter('maxPrice', (int) $filters['maxPrice']);
+            ->setParameter('maxPrice', (int) $filters['maxPrice']);
         }
 
         if (!empty($filters['maxDuration'])) {
             $qb->andWhere('c.travelTime <= :maxDuration')
-               ->setParameter('maxDuration', (int) $filters['maxDuration']);
+            ->setParameter('maxDuration', (int) $filters['maxDuration']);
         }
 
         if (!empty($filters['minPlaces'])) {
+            $minPlaces = max(1, (int) $filters['minPlaces']);
+
             $qb->andWhere('c.placesNbr >= :minPlaces')
-               ->setParameter('minPlaces', (int) $filters['minPlaces']);
+            ->setParameter('minPlaces', $minPlaces);
         }
 
         return $qb->orderBy('c.dateDeparture', 'ASC')
-                  ->getQuery()
-                  ->getResult();
+                ->getQuery()
+                ->getResult();
     }
+
 
     public function countPerDayLastDays(int $days = 7): array
     {

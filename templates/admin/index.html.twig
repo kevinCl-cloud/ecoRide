@@ -10,7 +10,7 @@
     </div>
 
     <div class="d-flex gap-2">
-      <a href="#" class="btn btn-outline-secondary btn-sm">Comptes</a>
+      <a href="{{path('admin_users_index')}}" class="btn btn-outline-secondary btn-sm">Comptes</a>
       <a href="{{ path('admin_employees_new') }}" class="btn btn-ecoride">Créer un employé</a>
     </div>
   </div>
@@ -33,7 +33,7 @@
   </div>
 
   <div class="row g-3">
-    {# Graphique 1 : covoiturages / jour (barres Bootstrap) #}
+    {# Graphique 1 : covoiturages / jour #}
     <div class="col-12 col-lg-6">
       <div class="card shadow-sm h-100">
         <div class="card-body">
@@ -45,7 +45,7 @@
           {% if covoituragesPerDay is empty %}
             <div class="alert alert-info mb-0">Aucune donnée.</div>
           {% else %}
-            {# on attend: [{day: '2026-02-18', cnt: 3}, ...] #}
+
             {% set maxCovo = 1 %}
             {% for row in covoituragesPerDay %}
               {% if row.cnt > maxCovo %}{% set maxCovo = row.cnt %}{% endif %}
@@ -81,7 +81,7 @@
       </div>
     </div>
 
-    {# Graphique 2 : crédits plateforme / jour (barres Bootstrap) #}
+    {# Graphique 2 : crédits plateforme / jour  #}
     <div class="col-12 col-lg-6">
       <div class="card shadow-sm h-100">
         <div class="card-body">
@@ -93,7 +93,7 @@
           {% if platformCreditsPerDay is empty %}
             <div class="alert alert-info mb-0">Aucune donnée.</div>
           {% else %}
-            {# on attend: [{day: '2026-02-18', credits: 12}, ...] #}
+
             {% set maxCredits = 1 %}
             {% for row in platformCreditsPerDay %}
               {% if row.credits > maxCredits %}{% set maxCredits = row.credits %}{% endif %}

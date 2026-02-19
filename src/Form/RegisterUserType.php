@@ -11,8 +11,8 @@ use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Validator\Constraints as Assert;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Validator\Constraints\File;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 
@@ -38,6 +38,23 @@ class RegisterUserType extends AbstractType
                     'placeholder' => 'Entrez votre pseudo'
                     ]
             ])
+            ->add('photo', FileType::class, [
+                    'label' => 'Photo de profil',
+                    'mapped' => false,
+                    'required' => false,
+                    'constraints' => [
+                        new File([
+                            'maxSize' => '2M',
+                            'mimeTypes' => [
+                                'image/jpeg',
+                                'image/png',
+                                'image/webp'
+                            ],
+                            'mimeTypesMessage' => 'Veuillez uploader une image valide (jpg, png, webp)',
+                        ])
+                    ],
+                ])
+
             ->add('email', EmailType::class, [
                 'attr' => [
                     'placeholder' => 'exemple@email.com'

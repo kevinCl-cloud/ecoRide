@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\CreditTransaction;
 use App\Entity\Reservation;
 use App\Form\CovoiturageSearchType;
 use App\Model\CovoiturageSearch;
@@ -9,6 +10,7 @@ use App\Repository\CovoiturageRepository;
 use App\Repository\ReservationRepository;
 use App\Service\CreditTransactionService;
 use App\Enum\CreditTransactionReason;
+use App\Enum\ReservationStatus;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -81,7 +83,7 @@ final class ReservationController extends AbstractController
         }
 
         // empêche le double remboursement
-        if (method_exists($reservation, 'getStatut') && $reservation->getStatus() === 'ANNULEE') {
+        if ($reservation->getStatus() === ReservationStatus::ANNULEE) {
             $this->addFlash('warning', 'Cette réservation est déjà annulée.');
             return $this->redirectToRoute('app_account');
         }
@@ -89,16 +91,16 @@ final class ReservationController extends AbstractController
         // --- Transaction DB  ---
         $em->beginTransaction();
         try {
-            // 1) Rendre une place
+            //  Rendre une place
             $covoiturage->setPlacesNbr($covoiturage->getPlacesNbr() + 1);
 
-            // 2) Remboursement + log transaction
+            //  Remboursement + log transaction
             $amount = (int) $covoiturage->getPrice();
             $creditService->credit($reservation->getIdUser(), $reservation, $amount, CreditTransactionReason::REMBOURSEMENT);
 
             //  Marquer la réservation annulée 
-            if (method_exists($reservation, 'setStatut')) {
-                $reservation->setStatus('ANNULEE');
+            if (method_exists($reservation, 'setStatus')) {
+                $reservation->setStatus(ReservationStatus::ANNULEE);
             }
 
             $creditService->flush();
@@ -110,6 +112,59 @@ final class ReservationController extends AbstractController
         }
 
         $this->addFlash('success', 'Réservation annulée. Vos crédits ont été remboursés.');
+        return $this->redirectToRoute('app_account');
+    }
+
+    #[Route('/reservation/{id}/delete-history', name: 'app_reservation_delete_history', methods: ['POST'])]
+    public function deleteHistory(
+        Reservation $reservation,
+        Request $request,
+        EntityManagerInterface $em
+    ): Response {
+        $user = $this->getUser();
+
+        if (!$user) {
+            throw $this->createAccessDeniedException();
+        }
+
+        //  la réservation doit appartenir à l'utilisateur
+        if ($reservation->getIdUser() !== $user) {
+            throw $this->createAccessDeniedException();
+        }
+
+        // CSRF
+        if (!$this->isCsrfTokenValid('delete_history' . $reservation->getId(), (string) $request->request->get('_token'))) {
+            throw $this->createAccessDeniedException('Token CSRF invalide.');
+        }
+
+        // On n'autorise pas la suppression d'une réservation active
+        if ($reservation->getStatus() === ReservationStatus::EN_ATTENTE) {
+            $this->addFlash('warning', 'Impossible de supprimer une réservation en cours.');
+            return $this->redirectToRoute('app_account');
+        }
+
+        $em->beginTransaction();
+        try {
+            // Détacher les transactions liées à cette réservation 
+            $txs = $em->getRepository(CreditTransaction::class)->findBy([
+                'idReservation' => $reservation
+            ]);
+
+            foreach ($txs as $tx) {
+                $tx->setIdReservation(null);
+            }
+
+            // Supprimer la réservation
+            $em->remove($reservation);
+
+            $em->flush();
+            $em->commit();
+        } catch (\Throwable $e) {
+            $em->rollback();
+            throw $e;
+        }
+
+        $this->addFlash('success', 'Réservation supprimée de votre historique.');
         return $this->redirectToRoute('app_account');
     }
 }

@@ -15,12 +15,13 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
 final class NoticeController extends AbstractController
-{
+    {
     #[Route('/reservation/{id}/notice', name: 'app_notice_create', methods: ['GET','POST'])]
     public function create(
         Reservation $reservation,
         Request $request,
-        EntityManagerInterface $em
+        EntityManagerInterface $em,
+        CreditTransactionService $creditService
     ): Response {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
 
@@ -38,6 +39,12 @@ final class NoticeController extends AbstractController
             return $this->redirectToRoute('app_account');
         }
 
+        //  Anti double validation/paiement 
+        if ($reservation->getStatus()->value === 'TERMINEE') {
+            $this->addFlash('info', "Cette réservation est déjà validée.");
+            return $this->redirectToRoute('app_account');
+        }
+
         $notice = new Notice();
         $notice->setIdReservation($reservation);
         $notice->setStatus(NoticeStatus::EN_ATTENTE);
@@ -47,8 +54,33 @@ final class NoticeController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $em->persist($notice);
-            $em->flush();
+
+            $em->beginTransaction();
+            try {
+                // Enregistrer l'avis
+                $em->persist($notice);
+
+                // Valider la réservation 
+                $reservation->setStatus(ReservationStatus::TERMINEE);
+
+                // Payer le chauffeur 
+                $covoiturage = $reservation->getIdCovoiturage();
+                $driver = $covoiturage->getIdDriver();
+
+
+                // Si la commission 2 a deja été debiter lors de la réservation, le chauffeur reçoit le prix complet.
+                $driverAmount = (int) $covoiturage->getPrice();
+
+                $creditService->payDriver($driver, $reservation, $driverAmount);
+
+                // Flush
+                $creditService->flush();
+
+                $em->commit();
+            } catch (\Throwable $e) {
+                $em->rollback();
+                throw $e;
+            }
 
             $this->addFlash('success', 'Merci ! Votre avis a bien été envoyé.');
             return $this->redirectToRoute('app_account');
@@ -59,6 +91,7 @@ final class NoticeController extends AbstractController
             'reservation' => $reservation,
         ]);
     }
+
 
     #[Route('/reservation/{id}/ignorer', name: 'app_notice_ignore', methods: ['POST'])]
     public function ignore(
